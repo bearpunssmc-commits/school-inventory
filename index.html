@@ -3,1408 +3,990 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบเบิกจ่ายพัสดุ</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>ระบบเบิกจ่ายพัสดุโรงเรียน</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --navy: #0f2744;
-  --navy-mid: #1a3a5c;
-  --blue: #1e5fa8;
-  --blue-light: #2d7dd2;
-  --gold: #e8a020;
-  --gold-light: #f5c842;
-  --green: #1a9b5c;
-  --green-light: #22c473;
-  --red: #c0392b;
-  --red-light: #e74c3c;
-  --orange: #d4790a;
-  --bg: #f0f4fa;
-  --surface: #ffffff;
-  --surface2: #f7f9fd;
-  --border: #dde5f0;
-  --text: #1a2a3a;
-  --text-muted: #6b7fa0;
-  --shadow: 0 2px 16px rgba(15,39,68,0.10);
-  --shadow-lg: 0 8px 40px rgba(15,39,68,0.16);
-  --radius: 14px;
-  --radius-sm: 8px;
-}
+  :root {
+    --navy: #0d2137;
+    --navy-mid: #163352;
+    --blue: #1e4d7b;
+    --accent: #e8a020;
+    --accent-light: #f5c84a;
+    --cream: #fdf6ec;
+    --white: #ffffff;
+    --gray-light: #f0f4f8;
+    --gray: #8a9bb0;
+    --text: #1a2e42;
+    --success: #2e8b57;
+    --danger: #c0392b;
+    --border: #d5e0ed;
+    --shadow: 0 4px 24px rgba(13,33,55,0.10);
+    --shadow-lg: 0 8px 40px rgba(13,33,55,0.18);
+  }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-  font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  font-size: 15px;
-}
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: var(--gray-light);
+    color: var(--text);
+    min-height: 100vh;
+  }
 
-/* ===== LOGIN ===== */
-#loginPage {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 40%, var(--blue) 100%);
-  position: relative;
-  overflow: hidden;
-}
-#loginPage::before {
-  content: '';
-  position: absolute;
-  width: 600px; height: 600px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(30,95,168,0.3) 0%, transparent 70%);
-  top: -200px; right: -100px;
-}
-#loginPage::after {
-  content: '';
-  position: absolute;
-  width: 400px; height: 400px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(232,160,32,0.15) 0%, transparent 70%);
-  bottom: -100px; left: -50px;
-}
-.login-card {
-  background: rgba(255,255,255,0.97);
-  border-radius: 24px;
-  padding: 48px 44px;
-  width: 420px;
-  max-width: 95vw;
-  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.2);
-  position: relative; z-index: 1;
-  animation: fadeUp .5s ease;
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.login-logo {
-  width: 72px; height: 72px;
-  background: linear-gradient(135deg, var(--navy), var(--blue));
-  border-radius: 20px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 32px; margin: 0 auto 20px;
-  box-shadow: 0 8px 24px rgba(15,39,68,0.3);
-}
-.login-title { text-align: center; margin-bottom: 8px; }
-.login-title h1 { font-size: 22px; font-weight: 700; color: var(--navy); }
-.login-title p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
-.login-divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+  /* Setup Banner */
+  #setupBanner {
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    color: white;
+    padding: 10px 32px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+  }
+  #setupBanner.hidden { display: none; }
+  #setupBanner a { color: #fbbf24; text-decoration: underline; cursor: pointer; }
+  .setup-url-input {
+    flex: 1; min-width: 200px; max-width: 420px;
+    padding: 5px 10px; border-radius: 6px; border: none;
+    font-family: 'Sarabun', sans-serif; font-size: 0.82rem;
+    background: rgba(255,255,255,0.15); color: white;
+  }
+  .setup-url-input::placeholder { color: rgba(255,255,255,0.5); }
+  .setup-url-input:focus { outline: 2px solid #fbbf24; background: rgba(255,255,255,0.2); }
 
-.form-group { margin-bottom: 18px; }
-.form-label { display: block; font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 7px; }
-.form-input {
-  width: 100%; padding: 12px 16px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-family: inherit; font-size: 15px;
-  color: var(--text); background: var(--surface2);
-  transition: all .2s;
-  outline: none;
-}
-.form-input:focus {
-  border-color: var(--blue); background: #fff;
-  box-shadow: 0 0 0 3px rgba(30,95,168,0.12);
-}
+  /* Loading Overlay */
+  #loadingOverlay {
+    position: fixed; inset: 0;
+    background: rgba(13,33,55,0.7);
+    z-index: 9999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px; color: white;
+  }
+  #loadingOverlay.hidden { display: none; }
+  .spinner {
+    width: 44px; height: 44px;
+    border: 4px solid rgba(255,255,255,0.2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 12px 24px; border-radius: var(--radius-sm);
-  font-family: inherit; font-size: 15px; font-weight: 600;
-  cursor: pointer; border: none; transition: all .2s;
-  text-decoration: none; white-space: nowrap;
-}
-.btn-primary { background: linear-gradient(135deg, var(--blue), var(--blue-light)); color: #fff; box-shadow: 0 4px 14px rgba(30,95,168,0.35); }
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(30,95,168,0.45); }
-.btn-primary:active { transform: translateY(0); }
-.btn-success { background: linear-gradient(135deg, var(--green), var(--green-light)); color: #fff; box-shadow: 0 4px 14px rgba(26,155,92,0.3); }
-.btn-success:hover { transform: translateY(-1px); }
-.btn-danger { background: linear-gradient(135deg, var(--red), var(--red-light)); color: #fff; }
-.btn-danger:hover { transform: translateY(-1px); }
-.btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--navy); box-shadow: 0 4px 14px rgba(232,160,32,0.3); }
-.btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text-muted); }
-.btn-outline:hover { border-color: var(--blue); color: var(--blue); background: rgba(30,95,168,0.05); }
-.btn-sm { padding: 7px 14px; font-size: 13px; }
-.btn-full { width: 100%; }
-.btn:disabled { opacity: .6; cursor: not-allowed; transform: none !important; }
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: white;
+    box-shadow: var(--shadow-lg);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-inner {
+    display: flex; align-items: center; gap: 18px; padding: 14px 32px;
+  }
+  .logo-circle {
+    width: 52px; height: 52px; background: var(--accent); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+    box-shadow: 0 2px 10px rgba(232,160,32,0.4);
+  }
+  .header-title h1 {
+    font-family: 'Noto Serif Thai', serif; font-size: 1.25rem; font-weight: 700;
+  }
+  .header-title p { font-size: 0.8rem; opacity: 0.75; margin-top: 2px; }
+  .header-right { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+  .badge-stat {
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px; padding: 5px 14px; font-size: 0.82rem;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .badge-stat span { color: var(--accent-light); font-weight: 700; }
+  .sync-btn {
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
+    color: white; border-radius: 8px; padding: 6px 14px; cursor: pointer;
+    font-family: 'Sarabun', sans-serif; font-size: 0.82rem; display: flex; align-items: center; gap: 6px;
+    transition: background 0.2s;
+  }
+  .sync-btn:hover { background: rgba(255,255,255,0.22); }
+  .sync-btn.spinning .sync-icon { animation: spin 0.8s linear infinite; display: inline-block; }
 
-/* ===== LAYOUT ===== */
-#appPage { display: none; min-height: 100vh; }
-.sidebar {
-  position: fixed; left: 0; top: 0; bottom: 0; width: 260px;
-  background: linear-gradient(180deg, var(--navy) 0%, var(--navy-mid) 100%);
-  display: flex; flex-direction: column;
-  box-shadow: 4px 0 24px rgba(15,39,68,0.2);
-  z-index: 100;
-}
-.sidebar-header {
-  padding: 24px 20px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-.sidebar-logo {
-  display: flex; align-items: center; gap: 12px;
-}
-.sidebar-icon {
-  width: 42px; height: 42px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-light));
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; flex-shrink: 0;
-}
-.sidebar-title { color: #fff; font-size: 15px; font-weight: 700; line-height: 1.3; }
-.sidebar-subtitle { color: rgba(255,255,255,0.5); font-size: 11px; margin-top: 2px; }
+  .nav-tabs { display: flex; background: var(--navy-mid); border-top: 1px solid rgba(255,255,255,0.08); }
+  .nav-tab {
+    padding: 10px 24px; cursor: pointer; font-size: 0.88rem;
+    color: rgba(255,255,255,0.6); border-bottom: 3px solid transparent;
+    transition: all 0.2s; display: flex; align-items: center; gap: 7px;
+  }
+  .nav-tab:hover { color: white; background: rgba(255,255,255,0.05); }
+  .nav-tab.active { color: var(--accent-light); border-bottom-color: var(--accent); background: rgba(232,160,32,0.08); }
 
-.sidebar-user {
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-.user-avatar {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--blue-light), var(--blue));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; color: #fff; font-weight: 700; flex-shrink: 0;
-}
-.user-info { display: flex; align-items: center; gap: 10px; }
-.user-name { color: #fff; font-size: 13px; font-weight: 600; }
-.user-role {
-  display: inline-block; padding: 2px 8px;
-  background: rgba(232,160,32,0.2); border: 1px solid rgba(232,160,32,0.3);
-  border-radius: 20px; color: var(--gold-light); font-size: 11px; margin-top: 2px;
-}
+  .main { padding: 28px 32px; max-width: 1300px; margin: 0 auto; }
+  .page { display: none; }
+  .page.active { display: block; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-.nav-section { padding: 12px 0; flex: 1; overflow-y: auto; }
-.nav-section-label {
-  padding: 4px 20px 8px;
-  color: rgba(255,255,255,0.35); font-size: 10px; font-weight: 700;
-  letter-spacing: 1.2px; text-transform: uppercase;
-}
-.nav-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 11px 20px; cursor: pointer;
-  color: rgba(255,255,255,0.65); font-size: 14px; font-weight: 500;
-  transition: all .2s; border-left: 3px solid transparent;
-  margin: 1px 0;
-}
-.nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
-.nav-item.active {
-  background: rgba(45,125,210,0.2); color: #fff;
-  border-left-color: var(--gold); font-weight: 600;
-}
-.nav-item .nav-icon { font-size: 18px; width: 22px; text-align: center; }
-.nav-badge {
-  margin-left: auto; background: var(--red-light); color: #fff;
-  font-size: 11px; font-weight: 700; padding: 2px 7px;
-  border-radius: 20px; min-width: 20px; text-align: center;
-}
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+  .section-title { font-family: 'Noto Serif Thai', serif; font-size: 1.15rem; font-weight: 700; color: var(--navy); }
+  .section-line { flex: 1; height: 2px; background: linear-gradient(to right, var(--border), transparent); }
 
-.sidebar-footer {
-  padding: 16px 20px;
-  border-top: 1px solid rgba(255,255,255,0.08);
-}
+  .card { background: white; border-radius: 14px; box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; }
+  .card-header {
+    padding: 16px 22px; border-bottom: 1px solid var(--border);
+    background: linear-gradient(to right, var(--gray-light), white);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card-header h3 { font-size: 0.95rem; font-weight: 600; color: var(--navy); }
+  .card-body { padding: 22px; }
 
-/* ===== MAIN ===== */
-.main { margin-left: 260px; min-height: 100vh; }
-.topbar {
-  background: var(--surface); border-bottom: 1px solid var(--border);
-  padding: 0 32px; height: 64px;
-  display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 50;
-  box-shadow: 0 2px 8px rgba(15,39,68,0.06);
-}
-.page-title { font-size: 20px; font-weight: 700; color: var(--navy); }
-.topbar-right { display: flex; align-items: center; gap: 12px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 
-.content { padding: 28px 32px; }
+  .stat-card {
+    background: white; border-radius: 14px; padding: 20px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px; transition: transform 0.2s;
+  }
+  .stat-card:hover { transform: translateY(-2px); }
+  .stat-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .stat-icon.blue { background: #e8f0fb; }
+  .stat-icon.green { background: #e8f5ee; }
+  .stat-icon.amber { background: #fef3e2; }
+  .stat-icon.red { background: #fde8e8; }
+  .stat-info p { font-size: 0.78rem; color: var(--gray); margin-bottom: 3px; }
+  .stat-info h2 { font-size: 1.6rem; font-weight: 700; color: var(--navy); }
 
-/* ===== CARDS ===== */
-.stats-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 28px;
-}
-.stat-card {
-  background: var(--surface); border-radius: var(--radius);
-  padding: 24px; border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  display: flex; align-items: center; gap: 18px;
-  transition: transform .2s, box-shadow .2s;
-}
-.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-.stat-icon {
-  width: 56px; height: 56px; border-radius: 16px;
-  display: flex; align-items: center; justify-content: center; font-size: 26px;
-  flex-shrink: 0;
-}
-.stat-icon.blue { background: rgba(30,95,168,0.1); }
-.stat-icon.gold { background: rgba(232,160,32,0.1); }
-.stat-icon.green { background: rgba(26,155,92,0.1); }
-.stat-icon.red { background: rgba(192,57,43,0.1); }
-.stat-value { font-size: 28px; font-weight: 800; color: var(--navy); line-height: 1; }
-.stat-label { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-size: 0.85rem; font-weight: 600; color: var(--navy); margin-bottom: 6px; display: block; }
+  .form-label .req { color: var(--danger); margin-left: 3px; }
+  .form-control {
+    width: 100%; padding: 9px 13px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: 'Sarabun', sans-serif; font-size: 0.9rem; color: var(--text);
+    background: white; transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+  }
+  .form-control:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(30,77,123,0.12); }
 
-.card {
-  background: var(--surface); border-radius: var(--radius);
-  border: 1px solid var(--border); box-shadow: var(--shadow);
-  overflow: hidden;
-}
-.card-header {
-  padding: 18px 24px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-  background: linear-gradient(135deg, rgba(15,39,68,0.03), rgba(30,95,168,0.03));
-}
-.card-title { font-size: 16px; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 8px; }
-.card-body { padding: 24px; }
+  .btn {
+    padding: 9px 20px; border-radius: 8px; border: none; cursor: pointer;
+    font-family: 'Sarabun', sans-serif; font-size: 0.88rem; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s;
+  }
+  .btn-primary { background: var(--blue); color: white; }
+  .btn-primary:hover { background: var(--navy); box-shadow: 0 4px 12px rgba(30,77,123,0.3); }
+  .btn-accent { background: var(--accent); color: white; }
+  .btn-accent:hover { background: #c98a18; }
+  .btn-success { background: var(--success); color: white; }
+  .btn-success:hover { background: #246b44; }
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-danger:hover { background: #a93226; }
+  .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+  .btn-outline:hover { border-color: var(--blue); color: var(--blue); background: var(--gray-light); }
+  .btn-sm { padding: 5px 12px; font-size: 0.8rem; }
 
-/* ===== TABLE ===== */
-.table-wrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; }
-thead tr { background: linear-gradient(135deg, var(--navy), var(--navy-mid)); }
-th {
-  padding: 12px 16px; text-align: left;
-  color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 600;
-  letter-spacing: 0.3px; white-space: nowrap;
-}
-td {
-  padding: 13px 16px; border-bottom: 1px solid var(--border);
-  font-size: 14px; color: var(--text);
-}
-tbody tr:hover { background: rgba(30,95,168,0.03); }
-tbody tr:last-child td { border-bottom: none; }
-.td-bold { font-weight: 600; color: var(--navy); }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  thead th {
+    background: var(--navy); color: white; padding: 11px 14px;
+    text-align: left; font-weight: 600; font-size: 0.83rem; letter-spacing: 0.3px;
+  }
+  thead th:first-child { border-radius: 8px 0 0 0; }
+  thead th:last-child { border-radius: 0 8px 0 0; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:hover { background: var(--gray-light); }
+  tbody td { padding: 10px 14px; vertical-align: middle; }
 
-/* ===== BADGES ===== */
-.badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 4px 11px; border-radius: 20px;
-  font-size: 12px; font-weight: 600; white-space: nowrap;
-}
-.badge-pending { background: rgba(232,160,32,0.12); color: var(--gold); border: 1px solid rgba(232,160,32,0.25); }
-.badge-approved { background: rgba(26,155,92,0.12); color: var(--green); border: 1px solid rgba(26,155,92,0.25); }
-.badge-rejected { background: rgba(192,57,43,0.12); color: var(--red); border: 1px solid rgba(192,57,43,0.25); }
-.badge-low { background: rgba(192,57,43,0.12); color: var(--red); border: 1px solid rgba(192,57,43,0.25); }
-.badge-ok { background: rgba(26,155,92,0.12); color: var(--green); border: 1px solid rgba(26,155,92,0.25); }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
+  .badge-pending { background: #fef3cd; color: #856404; }
+  .badge-approved { background: #d1e7dd; color: #0a4d24; }
+  .badge-rejected { background: #f8d7da; color: #72181f; }
+  .badge-low { background: #f8d7da; color: var(--danger); }
+  .badge-ok { background: #d1e7dd; color: var(--success); }
 
-/* ===== MODAL ===== */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(10,20,40,0.55); backdrop-filter: blur(4px);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 1000; padding: 20px;
-  opacity: 0; pointer-events: none; transition: opacity .2s;
-}
-.modal-overlay.open { opacity: 1; pointer-events: all; }
-.modal {
-  background: var(--surface); border-radius: 20px;
-  width: 100%; max-width: 560px; max-height: 90vh;
-  overflow-y: auto; box-shadow: var(--shadow-lg);
-  transform: scale(.95) translateY(10px); transition: transform .25s;
-}
-.modal-overlay.open .modal { transform: scale(1) translateY(0); }
-.modal-header {
-  padding: 22px 28px 18px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; background: var(--surface); z-index: 1;
-  border-radius: 20px 20px 0 0;
-}
-.modal-title { font-size: 18px; font-weight: 700; color: var(--navy); }
-.modal-close {
-  width: 32px; height: 32px; border-radius: 50%; border: none;
-  background: var(--surface2); color: var(--text-muted); cursor: pointer;
-  font-size: 18px; display: flex; align-items: center; justify-content: center;
-  transition: all .2s;
-}
-.modal-close:hover { background: var(--border); color: var(--text); }
-.modal-body { padding: 24px 28px; }
-.modal-footer { padding: 16px 28px 24px; display: flex; gap: 10px; justify-content: flex-end; }
+  .filter-bar { display: flex; gap: 12px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
+  .search-box { position: relative; flex: 1; min-width: 200px; }
+  .search-box input { padding-left: 36px; }
+  .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 14px; }
 
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.form-select {
-  width: 100%; padding: 11px 16px;
-  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-  font-family: inherit; font-size: 15px; color: var(--text);
-  background: var(--surface2); cursor: pointer; outline: none; transition: all .2s;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7fa0' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
-}
-.form-select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(30,95,168,0.12); }
-.form-textarea {
-  width: 100%; padding: 11px 16px;
-  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-  font-family: inherit; font-size: 15px; color: var(--text);
-  background: var(--surface2); resize: vertical; min-height: 80px; outline: none; transition: all .2s;
-}
-.form-textarea:focus { border-color: var(--blue); background: #fff; box-shadow: 0 0 0 3px rgba(30,95,168,0.12); }
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(13,33,55,0.55); z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .modal-overlay.show { opacity: 1; pointer-events: all; }
+  .modal {
+    background: white; border-radius: 18px; box-shadow: var(--shadow-lg);
+    width: 90%; max-width: 640px; max-height: 90vh; overflow-y: auto;
+    transform: scale(0.95); transition: transform 0.2s;
+  }
+  .modal-overlay.show .modal { transform: scale(1); }
+  .modal-header {
+    padding: 18px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(135deg, var(--navy), var(--blue));
+    color: white; border-radius: 18px 18px 0 0;
+  }
+  .modal-header h3 { font-size: 1rem; font-weight: 700; }
+  .modal-close {
+    background: rgba(255,255,255,0.15); border: none; color: white;
+    width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+    font-size: 16px; display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.3); }
+  .modal-body { padding: 24px; }
+  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
 
-/* ===== CART ===== */
-.cart-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 14px; background: var(--surface2); border-radius: var(--radius-sm);
-  border: 1px solid var(--border); margin-bottom: 8px;
-}
-.cart-item-name { flex: 1; font-size: 14px; font-weight: 500; }
-.qty-input {
-  width: 70px; text-align: center; padding: 7px 10px;
-  border: 1.5px solid var(--border); border-radius: 6px;
-  font-family: inherit; font-size: 14px; outline: none;
-}
-.qty-input:focus { border-color: var(--blue); }
-.cart-remove {
-  width: 28px; height: 28px; border-radius: 50%; border: none;
-  background: rgba(192,57,43,0.1); color: var(--red); cursor: pointer;
-  font-size: 16px; display: flex; align-items: center; justify-content: center;
-  transition: all .2s;
-}
-.cart-remove:hover { background: var(--red); color: #fff; }
+  .toast-container { position: fixed; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+  .toast {
+    background: white; border-radius: 10px; box-shadow: var(--shadow-lg);
+    padding: 14px 18px; display: flex; align-items: center; gap: 12px;
+    min-width: 280px; border-left: 4px solid; animation: slideIn 0.3s ease; font-size: 0.88rem;
+  }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  .toast.success { border-color: var(--success); }
+  .toast.error { border-color: var(--danger); }
+  .toast.info { border-color: var(--blue); }
+  .toast-close { background: none; border: none; cursor: pointer; color: var(--gray); font-size: 16px; }
 
-/* ===== TOAST ===== */
-.toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-.toast {
-  background: var(--navy); color: #fff;
-  padding: 14px 20px; border-radius: 12px;
-  box-shadow: var(--shadow-lg); font-size: 14px; font-weight: 500;
-  display: flex; align-items: center; gap: 10px;
-  animation: slideIn .3s ease; max-width: 320px;
-  border-left: 4px solid var(--blue-light);
-}
-.toast.success { border-left-color: var(--green-light); }
-.toast.error { border-left-color: var(--red-light); }
-.toast.warning { border-left-color: var(--gold); }
-@keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
+  .empty-state { text-align: center; padding: 40px; color: var(--gray); }
+  .empty-state .emoji { font-size: 40px; margin-bottom: 10px; }
 
-/* ===== SEARCH BAR ===== */
-.search-bar {
-  display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-.search-input-wrap {
-  position: relative; flex: 1; min-width: 200px;
-}
-.search-icon {
-  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-  color: var(--text-muted); font-size: 16px; pointer-events: none;
-}
-.search-input {
-  width: 100%; padding: 10px 16px 10px 38px;
-  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-  font-family: inherit; font-size: 14px; outline: none; transition: all .2s;
-  background: var(--surface2);
-}
-.search-input:focus { border-color: var(--blue); background: #fff; box-shadow: 0 0 0 3px rgba(30,95,168,0.12); }
+  .quick-actions { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+  .quick-btn {
+    background: white; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 12px 18px; cursor: pointer; display: flex; align-items: center; gap: 10px;
+    transition: all 0.2s; font-family: 'Sarabun', sans-serif; text-align: left;
+  }
+  .quick-btn:hover { border-color: var(--blue); background: var(--gray-light); transform: translateY(-1px); }
+  .quick-btn .icon { font-size: 22px; }
+  .quick-btn .label { font-size: 0.85rem; font-weight: 600; color: var(--navy); }
+  .quick-btn .desc { font-size: 0.76rem; color: var(--gray); }
 
-/* ===== MISC ===== */
-.empty-state {
-  text-align: center; padding: 60px 20px; color: var(--text-muted);
-}
-.empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
-.empty-state h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; color: var(--navy); }
+  .item-row { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; align-items: end; margin-bottom: 10px; }
+  .add-item-btn {
+    background: none; border: 1.5px dashed var(--border); border-radius: 8px; padding: 9px;
+    width: 100%; cursor: pointer; color: var(--blue); font-family: 'Sarabun', sans-serif;
+    font-size: 0.85rem; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: all 0.2s; margin-top: 4px;
+  }
+  .add-item-btn:hover { background: var(--gray-light); border-color: var(--blue); }
+  .remove-item { background: none; border: none; cursor: pointer; color: var(--danger); font-size: 18px; padding: 4px; border-radius: 4px; }
+  .remove-item:hover { background: #fde8e8; }
 
-.qty-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 4px; }
-.qty-fill { height: 100%; border-radius: 3px; transition: width .3s; }
-.qty-fill.ok { background: var(--green); }
-.qty-fill.low { background: var(--gold); }
-.qty-fill.critical { background: var(--red); }
+  /* Connection status dot */
+  .conn-dot { width: 8px; height: 8px; border-radius: 50%; background: #aaa; display: inline-block; margin-right: 5px; }
+  .conn-dot.connected { background: #4ade80; box-shadow: 0 0 6px #4ade80; }
+  .conn-dot.error { background: #f87171; }
 
-.tab-bar {
-  display: flex; gap: 4px; padding: 4px;
-  background: var(--surface2); border-radius: var(--radius-sm);
-  border: 1px solid var(--border); width: fit-content; margin-bottom: 20px;
-}
-.tab {
-  padding: 8px 18px; border-radius: 6px; cursor: pointer;
-  font-size: 14px; font-weight: 500; color: var(--text-muted); transition: all .2s;
-  border: none; background: transparent; font-family: inherit;
-}
-.tab.active { background: var(--surface); color: var(--navy); font-weight: 600; box-shadow: var(--shadow); }
-
-.loading-spinner {
-  width: 36px; height: 36px; border-radius: 50%;
-  border: 3px solid var(--border); border-top-color: var(--blue);
-  animation: spin .7s linear infinite; margin: 40px auto;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.config-banner {
-  background: linear-gradient(135deg, var(--navy), var(--blue));
-  border-radius: var(--radius); padding: 20px 24px; margin-bottom: 24px;
-  display: flex; align-items: center; justify-content: space-between;
-  color: #fff; gap: 16px;
-}
-.config-banner h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-.config-banner p { font-size: 13px; opacity: .8; }
-.config-input {
-  padding: 10px 16px; border-radius: var(--radius-sm);
-  border: none; outline: none; font-family: inherit; font-size: 14px;
-  min-width: 340px; background: rgba(255,255,255,0.15); color: #fff;
-}
-.config-input::placeholder { color: rgba(255,255,255,0.5); }
-
-@media (max-width: 1100px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 768px) {
-  .sidebar { width: 220px; }
-  .main { margin-left: 220px; }
-  .content { padding: 20px 16px; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-}
+  @media (max-width: 768px) {
+    .main { padding: 16px; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-3, .grid-2 { grid-template-columns: 1fr; }
+    .header-inner { padding: 12px 16px; }
+    .badge-stat { display: none; }
+    .item-row { grid-template-columns: 1fr 1fr; }
+    #setupBanner { padding: 10px 16px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- ===== LOGIN PAGE ===== -->
-<div id="loginPage">
-  <div class="login-card">
-    <div class="login-logo">🏫</div>
-    <div class="login-title">
-      <h1>ระบบเบิกจ่ายพัสดุ</h1>
-      <p>โรงเรียน — กรุณาเข้าสู่ระบบ</p>
+<!-- Loading -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <div style="font-size:0.9rem">กำลังโหลดข้อมูลจาก Google Sheets...</div>
+</div>
+
+<!-- Setup Banner -->
+<div id="setupBanner">
+  <span>⚙️ <strong>ตั้งค่า API URL:</strong></span>
+  <input type="text" class="setup-url-input" id="apiUrlInput" placeholder="วาง Google Apps Script Web App URL ที่นี่...">
+  <button class="btn btn-sm" style="background:#fbbf24;color:#1a1a1a;font-weight:700" onclick="saveApiUrl()">✓ บันทึก</button>
+  <span style="opacity:0.7">· <a onclick="document.getElementById('modalSetup').classList.add('show')">วิธี setup ?</a></span>
+</div>
+
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <div class="logo-circle">🏫</div>
+    <div class="header-title">
+      <h1>ระบบเบิกจ่ายพัสดุโรงเรียน</h1>
+      <p>เชื่อมต่อ Google Sheets · <span class="conn-dot" id="connDot"></span><span id="connStatus">ยังไม่ได้เชื่อมต่อ</span></p>
     </div>
-    <hr class="login-divider">
-    <div class="form-group">
-      <label class="form-label">ชื่อผู้ใช้</label>
-      <input type="text" class="form-input" id="loginUser" placeholder="กรอกชื่อผู้ใช้" value="admin">
+    <div class="header-right">
+      <div class="badge-stat">รอดำเนินการ: <span id="headerPending">0</span></div>
+      <div class="badge-stat">พัสดุทั้งหมด: <span id="headerItems">0</span></div>
+      <button class="sync-btn" onclick="syncAll()" id="syncBtn">
+        <span class="sync-icon">🔄</span> ซิงค์ข้อมูล
+      </button>
     </div>
-    <div class="form-group">
-      <label class="form-label">รหัสผ่าน</label>
-      <input type="password" class="form-input" id="loginPass" placeholder="กรอกรหัสผ่าน" value="admin1234">
+  </div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="showPage('dashboard')">📊 ภาพรวม</div>
+    <div class="nav-tab" onclick="showPage('requisition')">📋 เบิกพัสดุ</div>
+    <div class="nav-tab" onclick="showPage('inventory')">📦 คลังพัสดุ</div>
+    <div class="nav-tab" onclick="showPage('history')">📜 ประวัติ</div>
+    <div class="nav-tab" onclick="showPage('report')">📈 รายงาน</div>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div class="section-header">
+      <h2 class="section-title">ภาพรวมระบบ</h2>
+      <div class="section-line"></div>
+      <span style="font-size:0.8rem;color:var(--gray)" id="currentDate"></span>
     </div>
-    <div id="loginError" style="color:var(--red);font-size:13px;margin-bottom:12px;display:none;"></div>
-    <button class="btn btn-primary btn-full" id="loginBtn" onclick="doLogin()">
-      🔐 เข้าสู่ระบบ
-    </button>
-    <p style="text-align:center;color:var(--text-muted);font-size:12px;margin-top:16px;">
-      ทดสอบ: admin / admin1234 &nbsp;|&nbsp; teacher01 / pass1234
-    </p>
+    <div class="grid-4" style="margin-bottom:24px">
+      <div class="stat-card"><div class="stat-icon blue">📦</div><div class="stat-info"><p>รายการพัสดุ</p><h2 id="statItems">-</h2></div></div>
+      <div class="stat-card"><div class="stat-icon amber">🕐</div><div class="stat-info"><p>รอดำเนินการ</p><h2 id="statPending">-</h2></div></div>
+      <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-info"><p>อนุมัติแล้ว</p><h2 id="statApproved">-</h2></div></div>
+      <div class="stat-card"><div class="stat-icon red">⚠️</div><div class="stat-info"><p>สต็อกต่ำ</p><h2 id="statLow">-</h2></div></div>
+    </div>
+    <div class="quick-actions">
+      <div class="quick-btn" onclick="showPage('requisition');openNewReqModal()"><span class="icon">📝</span><div><div class="label">เบิกพัสดุใหม่</div><div class="desc">สร้างใบเบิกพัสดุ</div></div></div>
+      <div class="quick-btn" onclick="openAddItemModal()"><span class="icon">➕</span><div><div class="label">เพิ่มพัสดุ</div><div class="desc">เพิ่มรายการในคลัง</div></div></div>
+      <div class="quick-btn" onclick="syncAll()"><span class="icon">🔄</span><div><div class="label">ซิงค์ข้อมูล</div><div class="desc">โหลดข้อมูลล่าสุด</div></div></div>
+      <div class="quick-btn" onclick="showPage('report')"><span class="icon">📈</span><div><div class="label">รายงาน</div><div class="desc">ดูสถิติสรุป</div></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><span>🕐</span><h3>คำขอรอการอนุมัติ</h3></div>
+        <div id="dashPendingList"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span>⚠️</span><h3>พัสดุสต็อกต่ำ</h3></div>
+        <div id="dashLowList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REQUISITION -->
+  <div class="page" id="page-requisition">
+    <div class="section-header">
+      <h2 class="section-title">ใบเบิกพัสดุ</h2>
+      <div class="section-line"></div>
+      <button class="btn btn-accent" onclick="openNewReqModal()">➕ สร้างใบเบิกใหม่</button>
+    </div>
+    <div class="filter-bar">
+      <div class="search-box"><span class="search-icon">🔍</span><input type="text" class="form-control" placeholder="ค้นหา..." id="reqSearch" oninput="renderReqTable()"></div>
+      <select class="form-control" style="width:auto" id="reqStatusFilter" onchange="renderReqTable()">
+        <option value="">ทุกสถานะ</option>
+        <option value="รอดำเนินการ">รอดำเนินการ</option>
+        <option value="อนุมัติแล้ว">อนุมัติแล้ว</option>
+        <option value="ไม่อนุมัติ">ไม่อนุมัติ</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table><thead><tr><th>เลขที่</th><th>วันที่</th><th>ผู้เบิก</th><th>แผนก</th><th>รายการ</th><th>สถานะ</th><th>การดำเนินการ</th></tr></thead>
+        <tbody id="reqTableBody"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- INVENTORY -->
+  <div class="page" id="page-inventory">
+    <div class="section-header">
+      <h2 class="section-title">คลังพัสดุ</h2>
+      <div class="section-line"></div>
+      <button class="btn btn-accent" onclick="openAddItemModal()">➕ เพิ่มพัสดุ</button>
+    </div>
+    <div class="filter-bar">
+      <div class="search-box"><span class="search-icon">🔍</span><input type="text" class="form-control" placeholder="ค้นหาชื่อพัสดุ..." id="invSearch" oninput="renderInvTable()"></div>
+      <select class="form-control" style="width:auto" id="invCatFilter" onchange="renderInvTable()">
+        <option value="">ทุกหมวดหมู่</option>
+        <option>เครื่องเขียน</option><option>อุปกรณ์สำนักงาน</option>
+        <option>อุปกรณ์ทำความสะอาด</option><option>อุปกรณ์การสอน</option><option>อื่นๆ</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table><thead><tr><th>รหัส</th><th>ชื่อพัสดุ</th><th>หมวดหมู่</th><th>หน่วย</th><th>คงเหลือ</th><th>จุดสั่งซื้อ</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+        <tbody id="invTableBody"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="page" id="page-history">
+    <div class="section-header">
+      <h2 class="section-title">ประวัติการเบิก-จ่าย</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="filter-bar">
+      <div class="search-box"><span class="search-icon">🔍</span><input type="text" class="form-control" placeholder="ค้นหา..." id="histSearch" oninput="renderHistTable()"></div>
+      <select class="form-control" style="width:auto" id="histStatusFilter" onchange="renderHistTable()">
+        <option value="">ทุกสถานะ</option>
+        <option value="รอดำเนินการ">รอดำเนินการ</option>
+        <option value="อนุมัติแล้ว">อนุมัติแล้ว</option>
+        <option value="ไม่อนุมัติ">ไม่อนุมัติ</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table><thead><tr><th>เลขที่</th><th>วันที่</th><th>ผู้เบิก</th><th>แผนก</th><th>รายการพัสดุ</th><th>สถานะ</th><th>หมายเหตุ</th></tr></thead>
+        <tbody id="histTableBody"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="page" id="page-report">
+    <div class="section-header"><h2 class="section-title">รายงานสรุป</h2><div class="section-line"></div></div>
+    <div class="grid-3">
+      <div class="card"><div class="card-header"><span>📊</span><h3>สรุปสถานะใบเบิก</h3></div><div class="card-body" id="reportMonthly"></div></div>
+      <div class="card"><div class="card-header"><span>🏆</span><h3>พัสดุที่เบิกมากที่สุด</h3></div><div class="card-body" id="reportTopItems"></div></div>
+      <div class="card"><div class="card-header"><span>👥</span><h3>แผนกที่เบิกมากที่สุด</h3></div><div class="card-body" id="reportTopDept"></div></div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- MODAL: New Requisition -->
+<div class="modal-overlay" id="modalNewReq">
+  <div class="modal">
+    <div class="modal-header"><h3>📝 สร้างใบเบิกพัสดุใหม่</h3><button class="modal-close" onclick="closeModal('modalNewReq')">✕</button></div>
+    <div class="modal-body">
+      <div class="grid-2">
+        <div class="form-group"><label class="form-label">ชื่อผู้เบิก <span class="req">*</span></label><input type="text" class="form-control" id="reqName" placeholder="ชื่อ-นามสกุล"></div>
+        <div class="form-group"><label class="form-label">แผนก / ห้อง <span class="req">*</span></label>
+          <select class="form-control" id="reqDept"><option value="">-- เลือกแผนก --</option><option>ฝ่ายบริหาร</option><option>ฝ่ายวิชาการ</option><option>ฝ่ายปกครอง</option><option>ฝ่ายกิจการนักเรียน</option><option>ฝ่ายอาคารสถานที่</option><option>ห้องสมุด</option><option>ห้องพยาบาล</option><option>กลุ่มสาระภาษาไทย</option><option>กลุ่มสาระคณิตศาสตร์</option><option>กลุ่มสาระวิทยาศาสตร์</option><option>กลุ่มสาระสังคมศึกษา</option><option>กลุ่มสาระภาษาต่างประเทศ</option></select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><label class="form-label">วันที่เบิก</label><input type="date" class="form-control" id="reqDate"></div>
+        <div class="form-group"><label class="form-label">วัตถุประสงค์</label><input type="text" class="form-control" id="reqPurpose" placeholder="ใช้ในการ..."></div>
+      </div>
+      <hr style="border-color:var(--border);margin:12px 0 16px">
+      <div style="font-weight:600;font-size:0.88rem;color:var(--navy);margin-bottom:10px">📦 รายการพัสดุที่ขอเบิก</div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;margin-bottom:6px">
+        <span style="font-size:0.78rem;color:var(--gray);font-weight:600">ชื่อพัสดุ</span>
+        <span style="font-size:0.78rem;color:var(--gray);font-weight:600">จำนวน</span>
+        <span style="font-size:0.78rem;color:var(--gray);font-weight:600">หน่วย</span>
+        <span></span>
+      </div>
+      <div id="reqItemsList"></div>
+      <button class="add-item-btn" onclick="addReqItemRow()">➕ เพิ่มรายการพัสดุ</button>
+      <div class="form-group" style="margin-top:16px"><label class="form-label">หมายเหตุ</label><textarea class="form-control" id="reqNote" rows="2" placeholder="หมายเหตุ..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalNewReq')">ยกเลิก</button>
+      <button class="btn btn-accent" id="saveReqBtn" onclick="saveRequisition()">💾 บันทึกใบเบิก</button>
+    </div>
   </div>
 </div>
 
-<!-- ===== APP PAGE ===== -->
-<div id="appPage">
-
-  <!-- Sidebar -->
-  <nav class="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-logo">
-        <div class="sidebar-icon">🏫</div>
-        <div>
-          <div class="sidebar-title">ระบบพัสดุโรงเรียน</div>
-          <div class="sidebar-subtitle">Supply Management</div>
+<!-- MODAL: Add Inventory -->
+<div class="modal-overlay" id="modalAddItem">
+  <div class="modal">
+    <div class="modal-header"><h3>➕ เพิ่มพัสดุในคลัง</h3><button class="modal-close" onclick="closeModal('modalAddItem')">✕</button></div>
+    <div class="modal-body">
+      <div class="grid-2">
+        <div class="form-group"><label class="form-label">ชื่อพัสดุ <span class="req">*</span></label><input type="text" class="form-control" id="invName"></div>
+        <div class="form-group"><label class="form-label">หมวดหมู่</label>
+          <select class="form-control" id="invCat"><option>เครื่องเขียน</option><option>อุปกรณ์สำนักงาน</option><option>อุปกรณ์ทำความสะอาด</option><option>อุปกรณ์การสอน</option><option>อื่นๆ</option></select>
         </div>
+      </div>
+      <div class="grid-3">
+        <div class="form-group"><label class="form-label">หน่วยนับ</label><input type="text" class="form-control" id="invUnit" placeholder="อัน, กล่อง..."></div>
+        <div class="form-group"><label class="form-label">จำนวนคงเหลือ</label><input type="number" class="form-control" id="invStock" placeholder="0" min="0"></div>
+        <div class="form-group"><label class="form-label">จุดสั่งซื้อ (Min)</label><input type="number" class="form-control" id="invMin" placeholder="5" min="0"></div>
       </div>
     </div>
-
-    <div class="sidebar-user">
-      <div class="user-info">
-        <div class="user-avatar" id="sidebarAvatar">A</div>
-        <div>
-          <div class="user-name" id="sidebarName">—</div>
-          <div class="user-role" id="sidebarRole">—</div>
-        </div>
-      </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalAddItem')">ยกเลิก</button>
+      <button class="btn btn-accent" id="saveInvBtn" onclick="saveInventoryItem()">💾 บันทึก</button>
     </div>
-
-    <div class="nav-section">
-      <div class="nav-section-label">เมนูหลัก</div>
-      <div class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard">
-        <span class="nav-icon">📊</span> ภาพรวม
-      </div>
-      <div class="nav-item" onclick="showPage('supplies')" id="nav-supplies">
-        <span class="nav-icon">📦</span> คลังพัสดุ
-      </div>
-      <div class="nav-item" onclick="showPage('request')" id="nav-request">
-        <span class="nav-icon">📝</span> ขอเบิกพัสดุ
-      </div>
-      <div class="nav-item" onclick="showPage('myRequests')" id="nav-myRequests">
-        <span class="nav-icon">📋</span> รายการของฉัน
-      </div>
-
-      <div class="nav-section-label" id="adminNavLabel" style="display:none">ผู้ดูแลระบบ</div>
-      <div class="nav-item" onclick="showPage('approve')" id="nav-approve" style="display:none">
-        <span class="nav-icon">✅</span> อนุมัติคำขอ
-        <span class="nav-badge" id="pendingBadge" style="display:none">0</span>
-      </div>
-      <div class="nav-item" onclick="showPage('manageSupply')" id="nav-manageSupply" style="display:none">
-        <span class="nav-icon">⚙️</span> จัดการพัสดุ
-      </div>
-      <div class="nav-item" onclick="showPage('allRequests')" id="nav-allRequests" style="display:none">
-        <span class="nav-icon">📑</span> ประวัติทั้งหมด
-      </div>
-      <div class="nav-item" onclick="showPage('settings')" id="nav-settings" style="display:none">
-        <span class="nav-icon">🔧</span> ตั้งค่าระบบ
-      </div>
-    </div>
-
-    <div class="sidebar-footer">
-      <button class="btn btn-outline btn-full btn-sm" onclick="doLogout()">
-        🚪 ออกจากระบบ
-      </button>
-    </div>
-  </nav>
-
-  <!-- Main Content -->
-  <main class="main">
-    <div class="topbar">
-      <div class="page-title" id="pageTitle">📊 ภาพรวมระบบ</div>
-      <div class="topbar-right">
-        <span style="color:var(--text-muted);font-size:13px;" id="currentDate"></span>
-        <button class="btn btn-outline btn-sm" onclick="loadCurrentPage()">🔄 รีเฟรช</button>
-      </div>
-    </div>
-
-    <div class="content">
-
-      <!-- ===== DASHBOARD ===== -->
-      <div id="page-dashboard">
-        <div id="configBanner" class="config-banner" style="display:none">
-          <div>
-            <h3>⚙️ ยังไม่ได้เชื่อม Google Sheets</h3>
-            <p>ใส่ URL ของ Google Apps Script Web App เพื่อเริ่มใช้งาน</p>
-          </div>
-          <div style="display:flex;gap:10px;align-items:center;">
-            <input type="text" class="config-input" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/XXXXX/exec">
-            <button class="btn btn-gold btn-sm" onclick="saveScriptUrl()">บันทึก</button>
-          </div>
-        </div>
-
-        <div class="stats-grid" id="statsGrid">
-          <div class="stat-card"><div class="stat-icon blue">📦</div><div><div class="stat-value" id="stat1">—</div><div class="stat-label">พัสดุทั้งหมด</div></div></div>
-          <div class="stat-card"><div class="stat-icon red">⚠️</div><div><div class="stat-value" id="stat2">—</div><div class="stat-label">พัสดุใกล้หมด</div></div></div>
-          <div class="stat-card"><div class="stat-icon gold">🕐</div><div><div class="stat-value" id="stat3">—</div><div class="stat-label">รอการอนุมัติ</div></div></div>
-          <div class="stat-card"><div class="stat-icon green">✅</div><div><div class="stat-value" id="stat4">—</div><div class="stat-label">อนุมัติแล้ว</div></div></div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">📦 พัสดุใกล้หมด</div>
-          </div>
-          <div class="card-body" id="lowStockList">
-            <div class="loading-spinner"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== SUPPLIES ===== -->
-      <div id="page-supplies" style="display:none">
-        <div class="search-bar">
-          <div class="search-input-wrap">
-            <span class="search-icon">🔍</span>
-            <input type="text" class="search-input" id="supplySearch" placeholder="ค้นหาพัสดุ..." oninput="filterSupplies()">
-          </div>
-          <select class="form-select" id="categoryFilter" onchange="filterSupplies()" style="width:160px">
-            <option value="">ทุกหมวดหมู่</option>
-          </select>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">📦 รายการพัสดุทั้งหมด</div>
-          </div>
-          <div class="table-wrap" id="suppliesTable">
-            <div class="loading-spinner"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== REQUEST ===== -->
-      <div id="page-request" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 340px;gap:24px">
-          <div>
-            <div class="card" style="margin-bottom:20px">
-              <div class="card-header"><div class="card-title">🔍 เลือกพัสดุที่ต้องการเบิก</div></div>
-              <div class="card-body">
-                <div class="search-bar" style="margin-bottom:12px">
-                  <div class="search-input-wrap" style="flex:1">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" class="search-input" id="reqSearch" placeholder="ค้นหาพัสดุ..." oninput="filterReqSupplies()">
-                  </div>
-                </div>
-                <div id="reqSupplyList" style="max-height:380px;overflow-y:auto;"></div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="card" style="position:sticky;top:80px">
-              <div class="card-header"><div class="card-title">🛒 รายการเบิก (<span id="cartCount">0</span>)</div></div>
-              <div class="card-body">
-                <div id="cartItems" style="max-height:280px;overflow-y:auto;margin-bottom:16px;"></div>
-                <div class="form-group">
-                  <label class="form-label">วัตถุประสงค์การใช้ <span style="color:var(--red)">*</span></label>
-                  <textarea class="form-textarea" id="reqPurpose" placeholder="ระบุวัตถุประสงค์..."></textarea>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">แผนก/ห้องเรียน</label>
-                  <input type="text" class="form-input" id="reqDept" placeholder="เช่น ห้อง ม.3/2">
-                </div>
-                <button class="btn btn-primary btn-full" onclick="submitRequest()">📤 ส่งคำขอเบิก</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== MY REQUESTS ===== -->
-      <div id="page-myRequests" style="display:none">
-        <div class="tab-bar">
-          <button class="tab active" onclick="filterMyReq('')" id="tabAll">ทั้งหมด</button>
-          <button class="tab" onclick="filterMyReq('รอดำเนินการ')" id="tabPending">รอดำเนินการ</button>
-          <button class="tab" onclick="filterMyReq('อนุมัติ')" id="tabApproved">อนุมัติ</button>
-          <button class="tab" onclick="filterMyReq('ไม่อนุมัติ')" id="tabRejected">ไม่อนุมัติ</button>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title">📋 รายการขอเบิกของฉัน</div></div>
-          <div class="table-wrap" id="myReqTable"><div class="loading-spinner"></div></div>
-        </div>
-      </div>
-
-      <!-- ===== APPROVE ===== -->
-      <div id="page-approve" style="display:none">
-        <div class="card">
-          <div class="card-header"><div class="card-title">✅ รายการรออนุมัติ</div></div>
-          <div class="table-wrap" id="approveTable"><div class="loading-spinner"></div></div>
-        </div>
-      </div>
-
-      <!-- ===== MANAGE SUPPLY ===== -->
-      <div id="page-manageSupply" style="display:none">
-        <div style="margin-bottom:20px;display:flex;justify-content:flex-end;">
-          <button class="btn btn-primary" onclick="openAddSupplyModal()">➕ เพิ่มพัสดุใหม่</button>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title">⚙️ จัดการพัสดุ</div></div>
-          <div class="table-wrap" id="manageTable"><div class="loading-spinner"></div></div>
-        </div>
-      </div>
-
-      <!-- ===== ALL REQUESTS ===== -->
-      <div id="page-allRequests" style="display:none">
-        <div class="card">
-          <div class="card-header"><div class="card-title">📑 ประวัติการเบิกจ่ายทั้งหมด</div></div>
-          <div class="table-wrap" id="allReqTable"><div class="loading-spinner"></div></div>
-        </div>
-      </div>
-
-      <!-- ===== SETTINGS ===== -->
-      <div id="page-settings" style="display:none">
-        <div class="card">
-          <div class="card-header"><div class="card-title">🔧 ตั้งค่าระบบ</div></div>
-          <div class="card-body">
-            <div class="form-group">
-              <label class="form-label">🔗 Google Apps Script Web App URL</label>
-              <div style="display:flex;gap:10px">
-                <input type="text" class="form-input" id="settingsScriptUrl" placeholder="https://script.google.com/macros/s/XXXXX/exec">
-                <button class="btn btn-primary" onclick="saveScriptUrlFromSettings()">บันทึก</button>
-              </div>
-              <p style="color:var(--text-muted);font-size:12px;margin-top:8px">
-                URL ที่ได้จากการ Deploy Google Apps Script เป็น Web App
-              </p>
-            </div>
-            <hr style="border:none;border-top:1px solid var(--border);margin:24px 0">
-            <div class="form-group">
-              <label class="form-label">📋 ขั้นตอนการตั้งค่า</label>
-              <ol style="padding-left:20px;line-height:2;color:var(--text-muted);font-size:14px">
-                <li>เปิด <a href="https://sheets.google.com" target="_blank" style="color:var(--blue)">Google Sheets</a> และสร้าง Spreadsheet ใหม่ — จดจำ <strong>Sheet ID</strong> (จาก URL)</li>
-                <li>ไปที่ <a href="https://script.google.com" target="_blank" style="color:var(--blue)">Google Apps Script</a> → สร้างโปรเจ็กต์ใหม่</li>
-                <li>วางโค้ดจากไฟล์ <strong>Code.gs</strong> ที่ดาวน์โหลด</li>
-                <li>แก้ไข <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">SHEET_ID</code> ให้เป็น ID ของ Google Sheet คุณ</li>
-                <li>รัน <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">setupSheets()</code> เพื่อสร้าง Sheet header และข้อมูลตัวอย่าง</li>
-                <li>Deploy → New Deployment → Web App → Execute as "Me" → Access "Anyone"</li>
-                <li>คัดลอก URL ที่ได้มาใส่ในช่องด้านบน</li>
-              </ol>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </main>
+  </div>
 </div>
 
-<!-- Modal -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-  <div class="modal" id="modalBox">
-    <div class="modal-header">
-      <div class="modal-title" id="modalTitle">Modal</div>
-      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+<!-- MODAL: View Requisition -->
+<div class="modal-overlay" id="modalViewReq">
+  <div class="modal">
+    <div class="modal-header"><h3 id="viewReqTitle">ใบเบิกพัสดุ</h3><button class="modal-close" onclick="closeModal('modalViewReq')">✕</button></div>
+    <div class="modal-body" id="viewReqBody"></div>
+    <div class="modal-footer" id="viewReqFooter"></div>
+  </div>
+</div>
+
+<!-- MODAL: Setup Guide -->
+<div class="modal-overlay" id="modalSetup">
+  <div class="modal" style="max-width:720px">
+    <div class="modal-header"><h3>⚙️ วิธีตั้งค่า Google Apps Script</h3><button class="modal-close" onclick="closeModal('modalSetup')">✕</button></div>
+    <div class="modal-body" style="font-size:0.9rem;line-height:1.8">
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 16px;margin-bottom:16px">
+        ✅ ทำครั้งเดียว ใช้ได้ตลอด — ข้อมูลทั้งหมดจะเก็บใน Google Sheets ของคุณเอง
+      </div>
+      <ol style="padding-left:20px;display:flex;flex-direction:column;gap:12px">
+        <li><strong>เปิด Google Sheets ใหม่</strong> แล้วตั้งชื่อ เช่น "ระบบพัสดุโรงเรียน"</li>
+        <li>คลิกเมนู <strong>Extensions → Apps Script</strong></li>
+        <li>ลบโค้ดเดิมทั้งหมด แล้ว <strong>วางโค้ดจากไฟล์ <code>apps_script.gs</code></strong> ที่ได้รับ</li>
+        <li>คลิก <strong>💾 Save</strong> แล้วคลิก <strong>▶ Run → initSheets</strong> เพื่อสร้าง Sheet ครั้งแรก<br><small style="color:#666">อนุมัติสิทธิ์เข้าถึง Google Sheets เมื่อระบบถาม</small></li>
+        <li>คลิก <strong>Deploy → New deployment</strong><br>
+          → เลือก Type: <strong>Web app</strong><br>
+          → Execute as: <strong>Me</strong><br>
+          → Who has access: <strong>Anyone</strong> (หรือ Anyone with Google account)<br>
+          → คลิก <strong>Deploy</strong>
+        </li>
+        <li><strong>คัดลอก Web app URL</strong> ที่ได้ (ขึ้นต้นด้วย https://script.google.com/...)</li>
+        <li>วาง URL นั้นในช่องด้านบนสุดของหน้านี้ แล้วคลิก ✓ บันทึก</li>
+      </ol>
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin-top:16px">
+        💡 <strong>หมายเหตุ:</strong> ทุกครั้งที่แก้ไข Apps Script ต้อง Deploy ใหม่ (New deployment) เพื่อให้การเปลี่ยนแปลงมีผล
+      </div>
     </div>
-    <div class="modal-body" id="modalBody"></div>
-    <div class="modal-footer" id="modalFooter"></div>
+    <div class="modal-footer"><button class="btn btn-primary" onclick="closeModal('modalSetup')">เข้าใจแล้ว</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Adjust Stock -->
+<div class="modal-overlay" id="modalAdjStock">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header"><h3>📥 รับพัสดุเข้าคลัง</h3><button class="modal-close" onclick="closeModal('modalAdjStock')">✕</button></div>
+    <div class="modal-body">
+      <p style="margin-bottom:12px;font-weight:600" id="adjStockName"></p>
+      <div class="form-group"><label class="form-label">จำนวนที่รับเพิ่ม <span class="req">*</span></label><input type="number" class="form-control" id="adjQty" min="1" placeholder="ระบุจำนวน"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalAdjStock')">ยกเลิก</button>
+      <button class="btn btn-success" onclick="confirmAdjStock()">✓ บันทึกรับเข้า</button>
+    </div>
   </div>
 </div>
 
 <script>
-// ===== STATE =====
-let currentUser = null;
-let scriptUrl = localStorage.getItem('scriptUrl') || '';
-let allSupplies = [];
-let allMyReqs = [];
-let currentPage = 'dashboard';
-let cart = {};
-let reqFilter = '';
+// ==================== CONFIG ====================
+const STORAGE_KEY = 'school_supply_api_url';
+let API_URL = localStorage.getItem(STORAGE_KEY) || '';
 
-// ===== INIT =====
-window.onload = () => {
-  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('th-TH', {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-  });
+// Local cache
+let inventory = [];
+let requisitions = [];
+let adjStockId = null;
+let reqItemCount = 0;
 
-  const saved = localStorage.getItem('currentUser');
-  if (saved) {
-    currentUser = JSON.parse(saved);
-    initApp();
-  }
-};
-
-// ===== LOGIN =====
-async function doLogin() {
-  const u = document.getElementById('loginUser').value.trim();
-  const p = document.getElementById('loginPass').value.trim();
-  const btn = document.getElementById('loginBtn');
-  const err = document.getElementById('loginError');
-
-  if (!u || !p) { err.textContent = 'กรุณากรอกข้อมูลให้ครบ'; err.style.display = 'block'; return; }
-
-  btn.disabled = true; btn.textContent = '⏳ กำลังเข้าสู่ระบบ...';
-  err.style.display = 'none';
-
-  if (!scriptUrl) {
-    // Demo mode
-    const demoUsers = {
-      'admin': { id:'U001', username:'admin', name:'ผู้ดูแลระบบ', role:'admin', department:'ธุรการ', password:'admin1234' },
-      'teacher01': { id:'U002', username:'teacher01', name:'นายสมชาย ใจดี', role:'user', department:'ห้อง ม.1/1', password:'pass1234' }
-    };
-    const user = demoUsers[u];
-    if (user && user.password === p) {
-      currentUser = user;
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      btn.disabled = false; btn.textContent = '🔐 เข้าสู่ระบบ';
-      initApp();
-    } else {
-      err.textContent = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'; err.style.display = 'block';
-      btn.disabled = false; btn.textContent = '🔐 เข้าสู่ระบบ';
-    }
-    return;
-  }
-
-  try {
-    const res = await apiCall({ action: 'login', username: u, password: p });
-    if (res.success) {
-      currentUser = res.user;
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      initApp();
-    } else {
-      err.textContent = res.message; err.style.display = 'block';
-    }
-  } catch (e) {
-    err.textContent = 'เชื่อมต่อไม่ได้ — ตรวจสอบ Script URL หรือใช้ Demo Mode'; err.style.display = 'block';
-  }
-
-  btn.disabled = false; btn.textContent = '🔐 เข้าสู่ระบบ';
+// ==================== API ====================
+async function api(action, data = {}) {
+  if (!API_URL) throw new Error('ยังไม่ได้ตั้งค่า API URL');
+  const params = new URLSearchParams({ action, ...Object.fromEntries(
+    Object.entries(data).map(([k,v]) => [k, typeof v === 'object' ? JSON.stringify(v) : v])
+  )});
+  const res = await fetch(`${API_URL}?${params}`);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const json = await res.json();
+  if (json.error) throw new Error(json.error);
+  return json;
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('loginPage').style.display !== 'none') doLogin();
-});
-
-function initApp() {
-  document.getElementById('loginPage').style.display = 'none';
-  document.getElementById('appPage').style.display = 'block';
-
-  document.getElementById('sidebarName').textContent = currentUser.name || currentUser.username;
-  document.getElementById('sidebarRole').textContent = currentUser.role === 'admin' ? '👑 ผู้ดูแล' : '👤 ผู้ใช้';
-  document.getElementById('sidebarAvatar').textContent = (currentUser.name || currentUser.username).charAt(0).toUpperCase();
-
-  if (document.getElementById('reqDept')) document.getElementById('reqDept').value = currentUser.department || '';
-
-  if (currentUser.role === 'admin') {
-    document.getElementById('adminNavLabel').style.display = 'block';
-    document.getElementById('nav-approve').style.display = 'flex';
-    document.getElementById('nav-manageSupply').style.display = 'flex';
-    document.getElementById('nav-allRequests').style.display = 'flex';
-    document.getElementById('nav-settings').style.display = 'flex';
-  }
-
-  if (!scriptUrl) {
-    document.getElementById('configBanner').style.display = 'flex';
-    showToast('ยังไม่ได้ตั้งค่า Script URL — อยู่ใน Demo Mode', 'warning');
-  }
-
-  showPage('dashboard');
-  loadDemoData();
-}
-
-// ===== DEMO DATA =====
-let demoSupplies = [
-  { รหัส:'S001', ชื่อพัสดุ:'กระดาษ A4', หน่วย:'รีม', จำนวนคงเหลือ:50, จำนวนขั้นต่ำ:10, หมวดหมู่:'เครื่องเขียน' },
-  { รหัส:'S002', ชื่อพัสดุ:'ปากกาลูกลื่น', หน่วย:'แท่ง', จำนวนคงเหลือ:8, จำนวนขั้นต่ำ:20, หมวดหมู่:'เครื่องเขียน' },
-  { รหัส:'S003', ชื่อพัสดุ:'แฟ้มเอกสาร', หน่วย:'เล่ม', จำนวนคงเหลือ:30, จำนวนขั้นต่ำ:5, หมวดหมู่:'เครื่องเขียน' },
-  { รหัส:'S004', ชื่อพัสดุ:'หมึกปริ้นเตอร์', หน่วย:'กล่อง', จำนวนคงเหลือ:2, จำนวนขั้นต่ำ:3, หมวดหมู่:'อุปกรณ์' },
-  { รหัส:'S005', ชื่อพัสดุ:'กาว UHU', หน่วย:'หลอด', จำนวนคงเหลือ:25, จำนวนขั้นต่ำ:5, หมวดหมู่:'เครื่องเขียน' },
-  { รหัส:'S006', ชื่อพัสดุ:'ดินสอ 2B', หน่วย:'แท่ง', จำนวนคงเหลือ:60, จำนวนขั้นต่ำ:20, หมวดหมู่:'เครื่องเขียน' },
-  { รหัส:'S007', ชื่อพัสดุ:'ไม้บรรทัด 30cm', หน่วย:'อัน', จำนวนคงเหลือ:15, จำนวนขั้นต่ำ:10, หมวดหมู่:'เครื่องเขียน' },
-  { รหัส:'S008', ชื่อพัสดุ:'กรรไกร', หน่วย:'อัน', จำนวนคงเหลือ:5, จำนวนขั้นต่ำ:5, หมวดหมู่:'อุปกรณ์' },
-];
-let demoRequests = [
-  { รหัส:'R001', ผู้เบิก:'นายสมชาย ใจดี', แผนก:'ห้อง ม.1/1', รายการ:[{id:'S001',name:'กระดาษ A4',qty:5,unit:'รีม'}], วัตถุประสงค์:'ใช้ในการสอน', สถานะ:'รอดำเนินการ', วันที่ขอ:'23/3/2568 09:00', ผู้อนุมัติ:'', วันที่อนุมัติ:'' },
-  { รหัส:'R002', ผู้เบิก:'นางสาวสมหญิง รักเรียน', แผนก:'ห้อง ม.2/3', รายการ:[{id:'S002',name:'ปากกาลูกลื่น',qty:10,unit:'แท่ง'},{id:'S006',name:'ดินสอ 2B',qty:20,unit:'แท่ง'}], วัตถุประสงค์:'สอบปลายภาค', สถานะ:'อนุมัติ', วันที่ขอ:'22/3/2568 14:00', ผู้อนุมัติ:'ผู้ดูแลระบบ', วันที่อนุมัติ:'22/3/2568 15:30' },
-];
-
-function loadDemoData() {
-  allSupplies = [...demoSupplies];
-  allMyReqs = demoRequests.filter(r => r.ผู้เบิก === currentUser.name || currentUser.role === 'admin');
-}
-
-// ===== API =====
-async function apiCall(data) {
-  if (!scriptUrl) return null;
-  const res = await fetch(scriptUrl, {
-    method: 'POST', redirect: 'follow',
+async function apiPost(action, data = {}) {
+  if (!API_URL) throw new Error('ยังไม่ได้ตั้งค่า API URL');
+  const res = await fetch(API_URL, {
+    method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(data)
+    body: JSON.stringify({ action, ...data })
   });
-  return res.json();
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const json = await res.json();
+  if (json.error) throw new Error(json.error);
+  return json;
 }
 
-async function loadFromAPI(action, params = {}) {
-  if (!scriptUrl) return null;
+// ==================== SYNC ====================
+async function syncAll() {
+  if (!API_URL) { showToast('กรุณาตั้งค่า API URL ก่อน', 'error'); return; }
+  const btn = document.getElementById('syncBtn');
+  btn.classList.add('spinning');
   try {
-    const res = await apiCall({ action, ...params });
-    return res;
-  } catch (e) {
-    showToast('เชื่อมต่อ Google Sheets ไม่ได้ — ใช้ข้อมูล Demo', 'warning');
-    return null;
+    const [invRes, reqRes] = await Promise.all([
+      api('getInventory'),
+      api('getRequisitions')
+    ]);
+    inventory = invRes.data || [];
+    requisitions = reqRes.data || [];
+    setConnected(true);
+    updateStats();
+    renderReqTable(); renderInvTable(); renderHistTable(); renderReport();
+    showToast('ซิงค์ข้อมูลสำเร็จ ✓');
+  } catch(e) {
+    setConnected(false);
+    showToast('เชื่อมต่อไม่ได้: ' + e.message, 'error');
+  } finally {
+    btn.classList.remove('spinning');
   }
 }
 
-// ===== NAVIGATION =====
-const pageTitles = {
-  dashboard: '📊 ภาพรวมระบบ', supplies: '📦 คลังพัสดุ', request: '📝 ขอเบิกพัสดุ',
-  myRequests: '📋 รายการของฉัน', approve: '✅ อนุมัติคำขอ', manageSupply: '⚙️ จัดการพัสดุ',
-  allRequests: '📑 ประวัติทั้งหมด', settings: '🔧 ตั้งค่าระบบ'
-};
+function setConnected(ok) {
+  const dot = document.getElementById('connDot');
+  const txt = document.getElementById('connStatus');
+  dot.className = 'conn-dot ' + (ok ? 'connected' : 'error');
+  txt.textContent = ok ? 'เชื่อมต่อแล้ว' : 'เชื่อมต่อไม่ได้';
+}
 
+// ==================== SETUP ====================
+function saveApiUrl() {
+  const url = document.getElementById('apiUrlInput').value.trim();
+  if (!url.startsWith('https://')) { showToast('URL ไม่ถูกต้อง', 'error'); return; }
+  API_URL = url;
+  localStorage.setItem(STORAGE_KEY, url);
+  document.getElementById('setupBanner').classList.add('hidden');
+  showToast('บันทึก API URL แล้ว กำลังโหลดข้อมูล...');
+  syncAll();
+}
+
+// ==================== UTILS ====================
+function thDate(d) {
+  if (!d) return '';
+  const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  try {
+    const parts = String(d).split(/[-\/]/);
+    return `${parseInt(parts[2]||1)} ${months[parseInt(parts[1]||1)-1]} ${parseInt(parts[0])+543}`;
+  } catch { return d; }
+}
+function today() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function statusBadge(s) {
+  const map = {'รอดำเนินการ':'badge-pending','อนุมัติแล้ว':'badge-approved','ไม่อนุมัติ':'badge-rejected'};
+  return `<span class="badge ${map[s]||'badge-pending'}">${s}</span>`;
+}
+function stockBadge(item) {
+  const stock = parseInt(item.stock) || 0;
+  const min = parseInt(item.minStock) || 0;
+  if (stock === 0) return `<span class="badge badge-rejected">หมด</span>`;
+  if (stock <= min) return `<span class="badge badge-low">ต่ำ (${stock})</span>`;
+  return `<span class="badge badge-ok">ปกติ</span>`;
+}
+
+// ==================== TOAST ====================
+function showToast(msg, type='success') {
+  const icons = {success:'✅',error:'❌',info:'ℹ️'};
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${icons[type]}</span><span style="flex:1">${msg}</span><button class="toast-close" onclick="this.parentElement.remove()">✕</button>`;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(()=>t.remove(), 4000);
+}
+
+// ==================== NAVIGATION ====================
 function showPage(page) {
-  document.querySelectorAll('[id^="page-"]').forEach(el => el.style.display = 'none');
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-
-  document.getElementById('page-' + page).style.display = 'block';
-  const navEl = document.getElementById('nav-' + page);
-  if (navEl) navEl.classList.add('active');
-  document.getElementById('pageTitle').textContent = pageTitles[page] || '';
-  currentPage = page;
-
-  loadPage(page);
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const map={dashboard:0,requisition:1,inventory:2,history:3,report:4};
+  document.querySelectorAll('.nav-tab')[map[page]].classList.add('active');
+  if (page==='inventory') renderInvTable();
+  if (page==='requisition') renderReqTable();
+  if (page==='history') renderHistTable();
+  if (page==='report') renderReport();
 }
 
-async function loadPage(page) {
-  switch (page) {
-    case 'dashboard': await loadDashboard(); break;
-    case 'supplies': await loadSupplies(); break;
-    case 'request': await loadRequestPage(); break;
-    case 'myRequests': await loadMyRequests(); break;
-    case 'approve': await loadApprove(); break;
-    case 'manageSupply': await loadManage(); break;
-    case 'allRequests': await loadAllRequests(); break;
-    case 'settings':
-      const el = document.getElementById('settingsScriptUrl');
-      if (el) el.value = scriptUrl;
-      break;
-  }
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// ==================== DASHBOARD ====================
+function updateStats() {
+  const pending = requisitions.filter(r=>r.status==='รอดำเนินการ').length;
+  const approved = requisitions.filter(r=>r.status==='อนุมัติแล้ว').length;
+  const low = inventory.filter(i=>parseInt(i.stock)<=parseInt(i.minStock)).length;
+  document.getElementById('statItems').textContent = inventory.length;
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statApproved').textContent = approved;
+  document.getElementById('statLow').textContent = low;
+  document.getElementById('headerPending').textContent = pending;
+  document.getElementById('headerItems').textContent = inventory.length;
+
+  const pl = document.getElementById('dashPendingList');
+  const pend = requisitions.filter(r=>r.status==='รอดำเนินการ');
+  pl.innerHTML = pend.length === 0
+    ? '<div class="empty-state"><div class="emoji">🎉</div><p>ไม่มีคำขอรอดำเนินการ</p></div>'
+    : pend.slice(0,5).map(r=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border)">
+        <div style="flex:1"><div style="font-weight:600;font-size:0.88rem">${r.name}</div><div style="font-size:0.78rem;color:var(--gray)">${r.dept} · ${thDate(r.date)}</div></div>
+        <button class="btn btn-sm btn-success" onclick="approveReq('${r.id}')">✓ อนุมัติ</button>
+        <button class="btn btn-sm btn-danger" onclick="rejectReq('${r.id}')">✗</button>
+      </div>`).join('');
+
+  const ll = document.getElementById('dashLowList');
+  const lows = inventory.filter(i=>parseInt(i.stock)<=parseInt(i.minStock));
+  ll.innerHTML = lows.length === 0
+    ? '<div class="empty-state"><div class="emoji">📦</div><p>สต็อกพัสดุปกติทั้งหมด</p></div>'
+    : lows.slice(0,5).map(i=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border)">
+        <div style="flex:1"><div style="font-weight:600;font-size:0.88rem">${i.name}</div><div style="font-size:0.78rem;color:var(--gray)">${i.cat}</div></div>
+        ${stockBadge(i)}
+      </div>`).join('');
 }
 
-function loadCurrentPage() { loadPage(currentPage); }
-
-// ===== DASHBOARD =====
-async function loadDashboard() {
-  const res = scriptUrl ? await loadFromAPI('getStats') : null;
-  const sups = scriptUrl ? (await loadFromAPI('getSupplies'))?.data || [] : demoSupplies;
-  allSupplies = sups.length ? sups : demoSupplies;
-
-  const low = allSupplies.filter(s => Number(s['จำนวนคงเหลือ']) <= Number(s['จำนวนขั้นต่ำ']));
-
-  if (res?.data) {
-    document.getElementById('stat1').textContent = res.data.totalSupplies;
-    document.getElementById('stat2').textContent = res.data.lowStock;
-    document.getElementById('stat3').textContent = res.data.pendingRequests;
-    document.getElementById('stat4').textContent = res.data.approvedRequests;
-    const b = document.getElementById('pendingBadge');
-    if (res.data.pendingRequests > 0) { b.textContent = res.data.pendingRequests; b.style.display = 'inline-block'; }
-  } else {
-    const reqs = demoRequests;
-    document.getElementById('stat1').textContent = allSupplies.length;
-    document.getElementById('stat2').textContent = low.length;
-    document.getElementById('stat3').textContent = reqs.filter(r => r.สถานะ === 'รอดำเนินการ').length;
-    document.getElementById('stat4').textContent = reqs.filter(r => r.สถานะ === 'อนุมัติ').length;
-  }
-
-  const container = document.getElementById('lowStockList');
-  if (!low.length) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><h3>พัสดุทั้งหมดอยู่ในระดับปกติ</h3></div>';
-    return;
-  }
-  container.innerHTML = `
-    <div class="table-wrap">
-    <table>
-      <thead><tr><th>ชื่อพัสดุ</th><th>หมวดหมู่</th><th>คงเหลือ</th><th>ขั้นต่ำ</th><th>สถานะ</th></tr></thead>
-      <tbody>
-        ${low.map(s => {
-          const qty = Number(s['จำนวนคงเหลือ']), min = Number(s['จำนวนขั้นต่ำ']);
-          const pct = Math.min(100, Math.round(qty / min * 100));
-          const cl = qty === 0 ? 'critical' : qty < min ? 'low' : 'ok';
-          return `<tr>
-            <td class="td-bold">${s['ชื่อพัสดุ']}</td>
-            <td><span class="badge badge-ok">${s['หมวดหมู่']}</span></td>
-            <td>${qty} ${s['หน่วย']}<div class="qty-bar"><div class="qty-fill ${cl}" style="width:${pct}%"></div></div></td>
-            <td>${min} ${s['หน่วย']}</td>
-            <td><span class="badge ${qty === 0 ? 'badge-rejected' : 'badge-pending'}">${qty === 0 ? '⛔ หมดแล้ว' : '⚠️ ใกล้หมด'}</span></td>
-          </tr>`;
-        }).join('')}
-      </tbody>
-    </table>
-    </div>`;
-}
-
-// ===== SUPPLIES VIEW =====
-async function loadSupplies() {
-  const res = scriptUrl ? await loadFromAPI('getSupplies') : null;
-  allSupplies = res?.data || demoSupplies;
-  renderSuppliesTable();
-  populateCategoryFilter();
-}
-
-function populateCategoryFilter() {
-  const cats = [...new Set(allSupplies.map(s => s['หมวดหมู่']))];
-  const sel = document.getElementById('categoryFilter');
-  if (sel) {
-    sel.innerHTML = '<option value="">ทุกหมวดหมู่</option>' + cats.map(c => `<option>${c}</option>`).join('');
-  }
-}
-
-function renderSuppliesTable(filtered) {
-  const data = filtered || allSupplies;
-  const cont = document.getElementById('suppliesTable');
-  if (!data.length) { cont.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><h3>ไม่พบพัสดุ</h3></div>'; return; }
-
-  cont.innerHTML = `<table>
-    <thead><tr><th>รหัส</th><th>ชื่อพัสดุ</th><th>หมวดหมู่</th><th>หน่วย</th><th>คงเหลือ</th><th>ขั้นต่ำ</th><th>สถานะ</th></tr></thead>
-    <tbody>
-      ${data.map(s => {
-        const qty = Number(s['จำนวนคงเหลือ']), min = Number(s['จำนวนขั้นต่ำ']);
-        const isLow = qty <= min;
-        const pct = Math.min(100, min > 0 ? Math.round(qty / (min * 2) * 100) : 100);
-        const cl = qty === 0 ? 'critical' : isLow ? 'low' : 'ok';
-        return `<tr>
-          <td style="color:var(--text-muted);font-size:12px">${s['รหัส']}</td>
-          <td class="td-bold">${s['ชื่อพัสดุ']}</td>
-          <td><span class="badge badge-ok" style="font-size:11px">${s['หมวดหมู่']}</span></td>
-          <td>${s['หน่วย']}</td>
-          <td>${qty}<div class="qty-bar"><div class="qty-fill ${cl}" style="width:${pct}%"></div></div></td>
-          <td>${min}</td>
-          <td><span class="badge ${isLow ? 'badge-low' : 'badge-approved'}">${isLow ? (qty === 0 ? '⛔ หมด' : '⚠️ ต่ำ') : '✅ ปกติ'}</span></td>
-        </tr>`;
-      }).join('')}
-    </tbody>
-  </table>`;
-}
-
-function filterSupplies() {
-  const q = document.getElementById('supplySearch').value.toLowerCase();
-  const cat = document.getElementById('categoryFilter').value;
-  const filtered = allSupplies.filter(s =>
-    s['ชื่อพัสดุ'].toLowerCase().includes(q) &&
-    (cat === '' || s['หมวดหมู่'] === cat)
+// ==================== REQUISITION ====================
+function renderReqTable() {
+  const search = (document.getElementById('reqSearch')?.value||'').toLowerCase();
+  const sf = document.getElementById('reqStatusFilter')?.value||'';
+  const filtered = requisitions.filter(r=>
+    (r.name.toLowerCase().includes(search)||r.id.toLowerCase().includes(search)||r.dept.toLowerCase().includes(search))
+    && (!sf||r.status===sf)
   );
-  renderSuppliesTable(filtered);
+  const tb = document.getElementById('reqTableBody');
+  tb.innerHTML = filtered.length===0
+    ? `<tr><td colspan="7"><div class="empty-state"><div class="emoji">📋</div><p>ไม่พบรายการ</p></div></td></tr>`
+    : filtered.map(r=>`
+      <tr>
+        <td><strong>${r.id}</strong></td>
+        <td>${thDate(r.date)}</td>
+        <td>${r.name}</td>
+        <td>${r.dept}</td>
+        <td>${Array.isArray(r.items)?r.items.length:'-'} รายการ</td>
+        <td>${statusBadge(r.status)}</td>
+        <td>
+          <button class="btn btn-sm btn-outline" onclick="viewReq('${r.id}')">👁 ดู</button>
+          ${r.status==='รอดำเนินการ'?`<button class="btn btn-sm btn-success" onclick="approveReq('${r.id}')">✓</button> <button class="btn btn-sm btn-danger" onclick="rejectReq('${r.id}')">✗</button>`:''}
+        </td>
+      </tr>`).join('');
 }
 
-// ===== REQUEST PAGE =====
-async function loadRequestPage() {
-  const res = scriptUrl ? await loadFromAPI('getSupplies') : null;
-  allSupplies = res?.data || demoSupplies;
-  cart = {};
-  renderCart();
-  renderReqSupplies();
+function openNewReqModal() {
+  ['reqName','reqPurpose','reqNote'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('reqDept').value='';
+  document.getElementById('reqDate').value=today();
+  document.getElementById('reqItemsList').innerHTML='';
+  reqItemCount=0; addReqItemRow();
+  openModal('modalNewReq');
 }
 
-function renderReqSupplies(filtered) {
-  const data = filtered || allSupplies;
-  const cont = document.getElementById('reqSupplyList');
-  if (!data.length) { cont.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><h3>ไม่พบพัสดุ</h3></div>'; return; }
-
-  cont.innerHTML = data.map(s => {
-    const qty = Number(s['จำนวนคงเหลือ']);
-    const inCart = cart[s['รหัส']];
-    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1.5px solid ${inCart?'var(--blue)':'var(--border)'};border-radius:10px;margin-bottom:8px;background:${inCart?'rgba(30,95,168,0.05)':'var(--surface2)'}">
-      <div>
-        <div style="font-weight:600;font-size:14px">${s['ชื่อพัสดุ']}</div>
-        <div style="color:var(--text-muted);font-size:12px">คงเหลือ: ${qty} ${s['หน่วย']}</div>
-      </div>
-      <button class="btn ${inCart ? 'btn-outline' : 'btn-primary'} btn-sm" onclick="toggleCart('${s['รหัส']}','${s['ชื่อพัสดุ']}','${s['หน่วย']}',${qty})" ${qty <= 0 ? 'disabled' : ''}>
-        ${inCart ? '✓ เพิ่มแล้ว' : '+ เพิ่ม'}
-      </button>
-    </div>`;
-  }).join('');
+function addReqItemRow() {
+  const id = reqItemCount++;
+  const opts = inventory.map(i=>`<option value="${i.name}" data-unit="${i.unit}">${i.name} (${i.stock} ${i.unit})</option>`).join('');
+  const row = document.createElement('div');
+  row.className='item-row'; row.id='row-'+id;
+  row.innerHTML=`
+    <select class="form-control" onchange="updateUnit(this,${id})">
+      <option value="">-- เลือกพัสดุ --</option>${opts}
+    </select>
+    <input type="number" class="form-control item-qty" placeholder="จำนวน" min="1">
+    <input type="text" class="form-control item-unit" placeholder="หน่วย" readonly>
+    <button class="remove-item" onclick="document.getElementById('row-${id}').remove()">🗑</button>`;
+  document.getElementById('reqItemsList').appendChild(row);
 }
 
-function filterReqSupplies() {
-  const q = document.getElementById('reqSearch').value.toLowerCase();
-  renderReqSupplies(allSupplies.filter(s => s['ชื่อพัสดุ'].toLowerCase().includes(q)));
+function updateUnit(sel, id) {
+  const opt=sel.options[sel.selectedIndex];
+  document.querySelector(`#row-${id} .item-unit`).value=opt.getAttribute('data-unit')||'';
 }
 
-function toggleCart(id, name, unit, maxQty) {
-  if (cart[id]) {
-    delete cart[id];
-  } else {
-    cart[id] = { id, name, unit, qty: 1, max: maxQty };
+async function saveRequisition() {
+  const name=document.getElementById('reqName').value.trim();
+  const dept=document.getElementById('reqDept').value;
+  if (!name||!dept){showToast('กรุณากรอกชื่อผู้เบิกและแผนก','error');return;}
+
+  const rows=document.getElementById('reqItemsList').querySelectorAll('.item-row');
+  const items=[];
+  let valid=true;
+  rows.forEach(row=>{
+    const n=row.querySelector('select').value;
+    const q=parseInt(row.querySelector('.item-qty').value)||0;
+    const u=row.querySelector('.item-unit').value;
+    if(n&&q>0) items.push({name:n,qty:q,unit:u});
+    else if(n||q>0) valid=false;
+  });
+  if(!valid||items.length===0){showToast('กรุณากรอกรายการพัสดุให้ครบถ้วน','error');return;}
+
+  const btn=document.getElementById('saveReqBtn');
+  btn.disabled=true; btn.textContent='⏳ กำลังบันทึก...';
+  try {
+    const res=await apiPost('addRequisition',{
+      name, dept, date:document.getElementById('reqDate').value,
+      purpose:document.getElementById('reqPurpose').value,
+      note:document.getElementById('reqNote').value,
+      items
+    });
+    closeModal('modalNewReq');
+    await syncAll();
+    showToast(`สร้างใบเบิก ${res.id} เรียบร้อยแล้ว`);
+  } catch(e){showToast('บันทึกไม่สำเร็จ: '+e.message,'error');}
+  finally{btn.disabled=false;btn.textContent='💾 บันทึกใบเบิก';}
+}
+
+function viewReq(id) {
+  const r=requisitions.find(x=>x.id===id); if(!r)return;
+  document.getElementById('viewReqTitle').textContent=`ใบเบิกพัสดุ ${r.id}`;
+  document.getElementById('viewReqBody').innerHTML=`
+    <div class="grid-2" style="margin-bottom:14px">
+      <div><div class="form-label">ผู้เบิก</div>${r.name}</div>
+      <div><div class="form-label">แผนก</div>${r.dept}</div>
+      <div><div class="form-label">วันที่</div>${thDate(r.date)}</div>
+      <div><div class="form-label">วัตถุประสงค์</div>${r.purpose||'-'}</div>
+    </div>
+    <div style="font-weight:600;font-size:0.88rem;color:var(--navy);margin-bottom:8px">รายการพัสดุ</div>
+    <table style="margin-bottom:12px">
+      <thead><tr><th>#</th><th>ชื่อพัสดุ</th><th>จำนวน</th><th>หน่วย</th></tr></thead>
+      <tbody>${(Array.isArray(r.items)?r.items:[]).map((it,i)=>`<tr><td>${i+1}</td><td>${it.name}</td><td>${it.qty}</td><td>${it.unit}</td></tr>`).join('')}</tbody>
+    </table>
+    <div><div class="form-label">สถานะ</div>${statusBadge(r.status)}</div>
+    ${r.note?`<div style="margin-top:8px"><div class="form-label">หมายเหตุ</div>${r.note}</div>`:''}`;
+  const footer=document.getElementById('viewReqFooter');
+  footer.innerHTML=`<button class="btn btn-outline" onclick="closeModal('modalViewReq')">ปิด</button>`;
+  if(r.status==='รอดำเนินการ'){
+    footer.innerHTML+=`
+      <button class="btn btn-success" onclick="approveReq('${r.id}');closeModal('modalViewReq')">✓ อนุมัติ</button>
+      <button class="btn btn-danger" onclick="rejectReq('${r.id}');closeModal('modalViewReq')">✗ ไม่อนุมัติ</button>`;
   }
-  renderCart();
-  renderReqSupplies();
-}
-
-function renderCart() {
-  const items = Object.values(cart);
-  document.getElementById('cartCount').textContent = items.length;
-
-  const cont = document.getElementById('cartItems');
-  if (!items.length) {
-    cont.innerHTML = '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px">ยังไม่มีรายการ</div>';
-    return;
-  }
-  cont.innerHTML = items.map(item => `
-    <div class="cart-item">
-      <div class="cart-item-name">${item.name}</div>
-      <input type="number" class="qty-input" value="${item.qty}" min="1" max="${item.max}"
-        onchange="updateQty('${item.id}', this.value)">
-      <span style="color:var(--text-muted);font-size:12px">${item.unit}</span>
-      <button class="cart-remove" onclick="removeCart('${item.id}')">✕</button>
-    </div>`).join('');
-}
-
-function updateQty(id, val) {
-  if (cart[id]) {
-    const n = Math.max(1, Math.min(cart[id].max, parseInt(val) || 1));
-    cart[id].qty = n;
-  }
-}
-
-function removeCart(id) {
-  delete cart[id];
-  renderCart();
-  renderReqSupplies();
-}
-
-async function submitRequest() {
-  const items = Object.values(cart);
-  if (!items.length) { showToast('กรุณาเลือกพัสดุอย่างน้อย 1 รายการ', 'error'); return; }
-  const purpose = document.getElementById('reqPurpose').value.trim();
-  if (!purpose) { showToast('กรุณาระบุวัตถุประสงค์', 'error'); return; }
-
-  const dept = document.getElementById('reqDept').value.trim() || currentUser.department || '';
-
-  const payload = {
-    action: 'createRequest',
-    requester: currentUser.name || currentUser.username,
-    department: dept, purpose,
-    items: items.map(i => ({ id: i.id, name: i.name, qty: i.qty, unit: i.unit }))
-  };
-
-  if (scriptUrl) {
-    const res = await apiCall(payload);
-    if (res?.success) { showToast('✅ ส่งคำขอเบิกเรียบร้อย'); cart = {}; renderCart(); }
-    else showToast(res?.message || 'เกิดข้อผิดพลาด', 'error');
-  } else {
-    const newReq = {
-      รหัส: 'R' + Date.now(),
-      ผู้เบิก: currentUser.name || currentUser.username,
-      แผนก: dept,
-      รายการ: items.map(i => ({ id: i.id, name: i.name, qty: i.qty, unit: i.unit })),
-      วัตถุประสงค์: purpose, สถานะ: 'รอดำเนินการ',
-      วันที่ขอ: new Date().toLocaleString('th-TH'), ผู้อนุมัติ: '', วันที่อนุมัติ: ''
-    };
-    demoRequests.unshift(newReq);
-    showToast('✅ ส่งคำขอเบิกเรียบร้อย (Demo)');
-    cart = {}; renderCart(); renderReqSupplies();
-  }
-}
-
-// ===== MY REQUESTS =====
-async function loadMyRequests() {
-  const res = scriptUrl ? await loadFromAPI('getRequests', { requester: currentUser.name }) : null;
-  allMyReqs = res?.data || demoRequests.filter(r => r['ผู้เบิก'] === (currentUser.name || currentUser.username) || currentUser.role === 'admin');
-  renderMyReqs(allMyReqs);
-}
-
-function filterMyReq(status) {
-  document.querySelectorAll('.tab-bar .tab').forEach(t => t.classList.remove('active'));
-  const map = {'':'tabAll','รอดำเนินการ':'tabPending','อนุมัติ':'tabApproved','ไม่อนุมัติ':'tabRejected'};
-  document.getElementById(map[status])?.classList.add('active');
-  const filtered = status ? allMyReqs.filter(r => r['สถานะ'] === status) : allMyReqs;
-  renderMyReqs(filtered);
-}
-
-function renderMyReqs(data) {
-  const cont = document.getElementById('myReqTable');
-  if (!data.length) { cont.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><h3>ไม่มีรายการ</h3></div>'; return; }
-
-  cont.innerHTML = `<table>
-    <thead><tr><th>รหัส</th><th>รายการพัสดุ</th><th>วัตถุประสงค์</th><th>วันที่ขอ</th><th>สถานะ</th><th>ผู้อนุมัติ</th></tr></thead>
-    <tbody>
-      ${data.map(r => {
-        const items = Array.isArray(r['รายการ']) ? r['รายการ'] : [];
-        const sc = r['สถานะ'] === 'อนุมัติ' ? 'badge-approved' : r['สถานะ'] === 'ไม่อนุมัติ' ? 'badge-rejected' : 'badge-pending';
-        return `<tr>
-          <td style="font-size:12px;color:var(--text-muted)">${r['รหัส']}</td>
-          <td>${items.map(i => `<span style="display:inline-block;background:var(--surface2);border:1px solid var(--border);padding:2px 8px;border-radius:4px;font-size:12px;margin:2px">${i.name} ×${i.qty}</span>`).join('')}</td>
-          <td style="max-width:180px;font-size:13px">${r['วัตถุประสงค์']}</td>
-          <td style="font-size:13px;white-space:nowrap">${r['วันที่ขอ']}</td>
-          <td><span class="badge ${sc}">${r['สถานะ']}</span></td>
-          <td style="font-size:13px">${r['ผู้อนุมัติ'] || '—'}</td>
-        </tr>`;
-      }).join('')}
-    </tbody>
-  </table>`;
-}
-
-// ===== APPROVE =====
-async function loadApprove() {
-  const res = scriptUrl ? await loadFromAPI('getRequests', { status: 'รอดำเนินการ' }) : null;
-  const data = res?.data || demoRequests.filter(r => r['สถานะ'] === 'รอดำเนินการ');
-  const cont = document.getElementById('approveTable');
-
-  if (!data.length) { cont.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><h3>ไม่มีรายการรออนุมัติ</h3></div>'; return; }
-
-  cont.innerHTML = `<table>
-    <thead><tr><th>รหัส</th><th>ผู้เบิก</th><th>แผนก</th><th>รายการพัสดุ</th><th>วัตถุประสงค์</th><th>วันที่ขอ</th><th>การดำเนินการ</th></tr></thead>
-    <tbody>
-      ${data.map(r => {
-        const items = Array.isArray(r['รายการ']) ? r['รายการ'] : [];
-        return `<tr>
-          <td style="font-size:12px;color:var(--text-muted)">${r['รหัส']}</td>
-          <td class="td-bold">${r['ผู้เบิก']}</td>
-          <td style="font-size:13px">${r['แผนก']}</td>
-          <td>${items.map(i => `<span style="display:inline-block;background:var(--surface2);border:1px solid var(--border);padding:2px 8px;border-radius:4px;font-size:12px;margin:2px">${i.name} ×${i.qty}</span>`).join('')}</td>
-          <td style="font-size:13px">${r['วัตถุประสงค์']}</td>
-          <td style="font-size:13px;white-space:nowrap">${r['วันที่ขอ']}</td>
-          <td style="white-space:nowrap">
-            <button class="btn btn-success btn-sm" onclick="approveReq('${r['รหัส']}')">✅ อนุมัติ</button>
-            <button class="btn btn-danger btn-sm" onclick="rejectReq('${r['รหัส']}')">❌ ปฏิเสธ</button>
-          </td>
-        </tr>`;
-      }).join('')}
-    </tbody>
-  </table>`;
+  openModal('modalViewReq');
 }
 
 async function approveReq(id) {
-  if (!confirm('อนุมัติคำขอ ' + id + ' ?')) return;
-  if (scriptUrl) {
-    const res = await apiCall({ action: 'approveRequest', id, approver: currentUser.name });
-    if (res?.success) { showToast('✅ อนุมัติเรียบร้อย', 'success'); loadApprove(); }
-    else showToast(res?.message || 'เกิดข้อผิดพลาด', 'error');
-  } else {
-    const r = demoRequests.find(x => x['รหัส'] === id);
-    if (r) { r['สถานะ'] = 'อนุมัติ'; r['ผู้อนุมัติ'] = currentUser.name; r['วันที่อนุมัติ'] = new Date().toLocaleString('th-TH'); }
-    showToast('✅ อนุมัติเรียบร้อย (Demo)', 'success'); loadApprove();
-  }
+  try {
+    await apiPost('updateRequisitionStatus',{id, status:'อนุมัติแล้ว'});
+    await syncAll();
+    showToast(`อนุมัติใบเบิก ${id} และหักสต็อกแล้ว`);
+  } catch(e){showToast('ดำเนินการไม่สำเร็จ: '+e.message,'error');}
 }
 
 async function rejectReq(id) {
-  if (!confirm('ปฏิเสธคำขอ ' + id + ' ?')) return;
-  if (scriptUrl) {
-    const res = await apiCall({ action: 'rejectRequest', id, approver: currentUser.name });
-    if (res?.success) { showToast('ปฏิเสธเรียบร้อย', 'warning'); loadApprove(); }
-    else showToast(res?.message, 'error');
-  } else {
-    const r = demoRequests.find(x => x['รหัส'] === id);
-    if (r) { r['สถานะ'] = 'ไม่อนุมัติ'; r['ผู้อนุมัติ'] = currentUser.name; }
-    showToast('ปฏิเสธเรียบร้อย (Demo)', 'warning'); loadApprove();
-  }
+  try {
+    await apiPost('updateRequisitionStatus',{id, status:'ไม่อนุมัติ'});
+    await syncAll();
+    showToast(`ปฏิเสธใบเบิก ${id}`, 'info');
+  } catch(e){showToast('ดำเนินการไม่สำเร็จ: '+e.message,'error');}
 }
 
-// ===== MANAGE SUPPLY =====
-async function loadManage() {
-  const res = scriptUrl ? await loadFromAPI('getSupplies') : null;
-  allSupplies = res?.data || demoSupplies;
-  renderManageTable();
+// ==================== INVENTORY ====================
+function renderInvTable() {
+  const search=(document.getElementById('invSearch')?.value||'').toLowerCase();
+  const cat=document.getElementById('invCatFilter')?.value||'';
+  const filtered=inventory.filter(i=>(i.name.toLowerCase().includes(search)||i.id.toLowerCase().includes(search))&&(!cat||i.cat===cat));
+  const tb=document.getElementById('invTableBody');
+  tb.innerHTML=filtered.length===0
+    ? `<tr><td colspan="8"><div class="empty-state"><div class="emoji">📦</div><p>ไม่พบรายการ</p></div></td></tr>`
+    : filtered.map(i=>`
+      <tr>
+        <td>${i.id}</td>
+        <td><strong>${i.name}</strong></td>
+        <td>${i.cat}</td>
+        <td>${i.unit}</td>
+        <td>${i.stock}</td>
+        <td>${i.minStock}</td>
+        <td>${stockBadge(i)}</td>
+        <td><button class="btn btn-sm btn-outline" onclick="openAdjStock('${i.id}')">📥 รับเพิ่ม</button></td>
+      </tr>`).join('');
 }
 
-function renderManageTable() {
-  const cont = document.getElementById('manageTable');
-  if (!allSupplies.length) { cont.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><h3>ยังไม่มีพัสดุ</h3></div>'; return; }
-
-  cont.innerHTML = `<table>
-    <thead><tr><th>รหัส</th><th>ชื่อพัสดุ</th><th>หมวดหมู่</th><th>หน่วย</th><th>คงเหลือ</th><th>ขั้นต่ำ</th><th>การดำเนินการ</th></tr></thead>
-    <tbody>
-      ${allSupplies.map(s => `<tr>
-        <td style="font-size:12px;color:var(--text-muted)">${s['รหัส']}</td>
-        <td class="td-bold">${s['ชื่อพัสดุ']}</td>
-        <td>${s['หมวดหมู่']}</td>
-        <td>${s['หน่วย']}</td>
-        <td>${s['จำนวนคงเหลือ']}</td>
-        <td>${s['จำนวนขั้นต่ำ']}</td>
-        <td style="white-space:nowrap">
-          <button class="btn btn-outline btn-sm" onclick='openEditSupply(${JSON.stringify(s)})'>✏️ แก้ไข</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteSupply('${s['รหัส']}')">🗑️</button>
-        </td>
-      </tr>`).join('')}
-    </tbody>
-  </table>`;
+function openAddItemModal() {
+  ['invName','invUnit'].forEach(id=>document.getElementById(id).value='');
+  ['invStock','invMin'].forEach(id=>document.getElementById(id).value='');
+  openModal('modalAddItem');
 }
 
-function openAddSupplyModal() {
-  document.getElementById('modalTitle').textContent = '➕ เพิ่มพัสดุใหม่';
-  document.getElementById('modalBody').innerHTML = supplyForm({});
-  document.getElementById('modalFooter').innerHTML = `
-    <button class="btn btn-outline" onclick="closeModalDirect()">ยกเลิก</button>
-    <button class="btn btn-primary" onclick="saveSupply()">💾 บันทึก</button>`;
-  document.getElementById('modalOverlay').classList.add('open');
+async function saveInventoryItem() {
+  const name=document.getElementById('invName').value.trim();
+  if(!name){showToast('กรุณาระบุชื่อพัสดุ','error');return;}
+  const btn=document.getElementById('saveInvBtn');
+  btn.disabled=true; btn.textContent='⏳ กำลังบันทึก...';
+  try {
+    await apiPost('addInventory',{
+      name, cat:document.getElementById('invCat').value,
+      unit:document.getElementById('invUnit').value||'อัน',
+      stock:parseInt(document.getElementById('invStock').value)||0,
+      minStock:parseInt(document.getElementById('invMin').value)||5
+    });
+    closeModal('modalAddItem');
+    await syncAll();
+    showToast(`เพิ่มพัสดุ "${name}" เรียบร้อยแล้ว`);
+  } catch(e){showToast('บันทึกไม่สำเร็จ: '+e.message,'error');}
+  finally{btn.disabled=false;btn.textContent='💾 บันทึก';}
 }
 
-function openEditSupply(s) {
-  document.getElementById('modalTitle').textContent = '✏️ แก้ไขพัสดุ';
-  document.getElementById('modalBody').innerHTML = supplyForm(s);
-  document.getElementById('modalFooter').innerHTML = `
-    <button class="btn btn-outline" onclick="closeModalDirect()">ยกเลิก</button>
-    <button class="btn btn-primary" onclick="saveSupply('${s['รหัส']}')">💾 บันทึก</button>`;
-  document.getElementById('modalOverlay').classList.add('open');
+function openAdjStock(id) {
+  const item=inventory.find(i=>i.id===id); if(!item)return;
+  adjStockId=id;
+  document.getElementById('adjStockName').textContent=`พัสดุ: ${item.name} (คงเหลือ: ${item.stock} ${item.unit})`;
+  document.getElementById('adjQty').value='';
+  openModal('modalAdjStock');
 }
 
-function supplyForm(s) {
-  return `
-    <div class="form-group"><label class="form-label">ชื่อพัสดุ *</label><input class="form-input" id="fName" value="${s['ชื่อพัสดุ']||''}"></div>
-    <div class="form-row">
-      <div class="form-group"><label class="form-label">หน่วย *</label><input class="form-input" id="fUnit" value="${s['หน่วย']||''}"></div>
-      <div class="form-group"><label class="form-label">หมวดหมู่</label>
-        <select class="form-select" id="fCat">
-          <option ${s['หมวดหมู่']==='เครื่องเขียน'?'selected':''}>เครื่องเขียน</option>
-          <option ${s['หมวดหมู่']==='อุปกรณ์'?'selected':''}>อุปกรณ์</option>
-          <option ${s['หมวดหมู่']==='วัสดุ'?'selected':''}>วัสดุ</option>
-          <option ${s['หมวดหมู่']==='อื่นๆ'?'selected':''}>อื่นๆ</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label class="form-label">จำนวนคงเหลือ</label><input class="form-input" id="fQty" type="number" min="0" value="${s['จำนวนคงเหลือ']||0}"></div>
-      <div class="form-group"><label class="form-label">จำนวนขั้นต่ำ</label><input class="form-input" id="fMin" type="number" min="0" value="${s['จำนวนขั้นต่ำ']||0}"></div>
+async function confirmAdjStock() {
+  const qty=parseInt(document.getElementById('adjQty').value)||0;
+  if(qty<=0){showToast('กรุณาระบุจำนวนที่รับเพิ่ม','error');return;}
+  try {
+    await apiPost('adjustStock',{id:adjStockId, qty});
+    closeModal('modalAdjStock');
+    await syncAll();
+    showToast(`รับพัสดุเข้าคลังเรียบร้อยแล้ว`);
+  } catch(e){showToast('บันทึกไม่สำเร็จ: '+e.message,'error');}
+}
+
+// ==================== HISTORY ====================
+function renderHistTable() {
+  const search=(document.getElementById('histSearch')?.value||'').toLowerCase();
+  const sf=document.getElementById('histStatusFilter')?.value||'';
+  const filtered=requisitions.filter(r=>(r.name.toLowerCase().includes(search)||r.id.toLowerCase().includes(search))&&(!sf||r.status===sf));
+  const tb=document.getElementById('histTableBody');
+  tb.innerHTML=filtered.length===0
+    ? `<tr><td colspan="7"><div class="empty-state"><div class="emoji">📜</div><p>ไม่พบรายการ</p></div></td></tr>`
+    : filtered.map(r=>`
+      <tr>
+        <td><strong>${r.id}</strong></td>
+        <td>${thDate(r.date)}</td>
+        <td>${r.name}</td>
+        <td>${r.dept}</td>
+        <td>${Array.isArray(r.items)?r.items.map(it=>`${it.name} (${it.qty} ${it.unit})`).join(', '):'-'}</td>
+        <td>${statusBadge(r.status)}</td>
+        <td>${r.note||'-'}</td>
+      </tr>`).join('');
+}
+
+// ==================== REPORT ====================
+function renderReport() {
+  const approved=requisitions.filter(r=>r.status==='อนุมัติแล้ว');
+  const pending=requisitions.filter(r=>r.status==='รอดำเนินการ');
+  const rejected=requisitions.filter(r=>r.status==='ไม่อนุมัติ');
+  const total=requisitions.length;
+
+  document.getElementById('reportMonthly').innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:12px">
+      ${[{label:'ทั้งหมด',val:total,color:'#1e4d7b',pct:100},
+         {label:'อนุมัติแล้ว',val:approved.length,color:'#2e8b57',pct:total?Math.round(approved.length/total*100):0},
+         {label:'รอดำเนินการ',val:pending.length,color:'#e8a020',pct:total?Math.round(pending.length/total*100):0},
+         {label:'ไม่อนุมัติ',val:rejected.length,color:'#c0392b',pct:total?Math.round(rejected.length/total*100):0},
+      ].map(item=>`
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px"><span>${item.label}</span><span style="font-weight:700">${item.val} รายการ</span></div>
+          <div style="height:7px;background:var(--border);border-radius:9px;overflow:hidden">
+            <div style="height:100%;width:${item.pct}%;background:${item.color};border-radius:9px"></div>
+          </div>
+        </div>`).join('')}
     </div>`;
+
+  const itemCount={};
+  approved.forEach(r=>(Array.isArray(r.items)?r.items:[]).forEach(it=>{ itemCount[it.name]=(itemCount[it.name]||0)+parseInt(it.qty||0); }));
+  const topItems=Object.entries(itemCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  document.getElementById('reportTopItems').innerHTML=topItems.length===0
+    ? '<div class="empty-state"><p>ยังไม่มีข้อมูล</p></div>'
+    : `<table><thead><tr><th>พัสดุ</th><th>จำนวนรวม</th></tr></thead><tbody>${topItems.map(([n,c],i)=>`<tr><td>${i+1}. ${n}</td><td>${c}</td></tr>`).join('')}</tbody></table>`;
+
+  const deptCount={};
+  requisitions.forEach(r=>{ deptCount[r.dept]=(deptCount[r.dept]||0)+1; });
+  const topDepts=Object.entries(deptCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  document.getElementById('reportTopDept').innerHTML=topDepts.length===0
+    ? '<div class="empty-state"><p>ยังไม่มีข้อมูล</p></div>'
+    : `<table><thead><tr><th>แผนก</th><th>ครั้ง</th></tr></thead><tbody>${topDepts.map(([n,c],i)=>`<tr><td>${i+1}. ${n}</td><td>${c}</td></tr>`).join('')}</tbody></table>`;
 }
 
-async function saveSupply(id) {
-  const name = document.getElementById('fName').value.trim();
-  const unit = document.getElementById('fUnit').value.trim();
-  if (!name || !unit) { showToast('กรุณากรอกชื่อและหน่วย', 'error'); return; }
+// ==================== INIT ====================
+document.getElementById('currentDate').textContent = thDate(today());
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('show'); }));
 
-  const data = {
-    name, unit,
-    quantity: document.getElementById('fQty').value,
-    minStock: document.getElementById('fMin').value,
-    category: document.getElementById('fCat').value
-  };
-
-  if (scriptUrl) {
-    const payload = id ? { action: 'updateSupply', id, ...data } : { action: 'addSupply', ...data };
-    const res = await apiCall(payload);
-    if (res?.success) { showToast('💾 บันทึกเรียบร้อย', 'success'); closeModalDirect(); loadManage(); }
-    else showToast(res?.message || 'เกิดข้อผิดพลาด', 'error');
-  } else {
-    if (id) {
-      const s = demoSupplies.find(x => x['รหัส'] === id);
-      if (s) { s['ชื่อพัสดุ'] = name; s['หน่วย'] = unit; s['จำนวนคงเหลือ'] = +data.quantity; s['จำนวนขั้นต่ำ'] = +data.minStock; s['หมวดหมู่'] = data.category; }
-    } else {
-      demoSupplies.push({ รหัส:'S'+Date.now(), ชื่อพัสดุ:name, หน่วย:unit, จำนวนคงเหลือ:+data.quantity, จำนวนขั้นต่ำ:+data.minStock, หมวดหมู่:data.category });
-    }
-    showToast('💾 บันทึกเรียบร้อย (Demo)', 'success'); closeModalDirect(); loadManage();
+// Init
+(async function init() {
+  if (API_URL) {
+    document.getElementById('setupBanner').classList.add('hidden');
+    document.getElementById('apiUrlInput').value = API_URL;
+    try {
+      await syncAll();
+    } catch(e) {}
   }
-}
-
-async function deleteSupply(id) {
-  if (!confirm('ลบพัสดุ ' + id + ' ?')) return;
-  if (scriptUrl) {
-    const res = await apiCall({ action: 'deleteSupply', id });
-    if (res?.success) { showToast('🗑️ ลบเรียบร้อย', 'success'); loadManage(); }
-    else showToast(res?.message, 'error');
-  } else {
-    const i = demoSupplies.findIndex(x => x['รหัส'] === id);
-    if (i > -1) demoSupplies.splice(i, 1);
-    showToast('🗑️ ลบเรียบร้อย (Demo)', 'success'); loadManage();
-  }
-}
-
-// ===== ALL REQUESTS =====
-async function loadAllRequests() {
-  const res = scriptUrl ? await loadFromAPI('getRequests') : null;
-  const data = res?.data || demoRequests;
-  const cont = document.getElementById('allReqTable');
-  if (!data.length) { cont.innerHTML = '<div class="empty-state"><div class="empty-icon">📑</div><h3>ไม่มีประวัติ</h3></div>'; return; }
-
-  cont.innerHTML = `<table>
-    <thead><tr><th>รหัส</th><th>ผู้เบิก</th><th>แผนก</th><th>รายการ</th><th>วัตถุประสงค์</th><th>วันที่ขอ</th><th>สถานะ</th><th>ผู้อนุมัติ</th></tr></thead>
-    <tbody>
-      ${data.map(r => {
-        const items = Array.isArray(r['รายการ']) ? r['รายการ'] : [];
-        const sc = r['สถานะ'] === 'อนุมัติ' ? 'badge-approved' : r['สถานะ'] === 'ไม่อนุมัติ' ? 'badge-rejected' : 'badge-pending';
-        return `<tr>
-          <td style="font-size:12px;color:var(--text-muted)">${r['รหัส']}</td>
-          <td class="td-bold">${r['ผู้เบิก']}</td>
-          <td style="font-size:13px">${r['แผนก']}</td>
-          <td>${items.map(i => `<span style="display:inline-block;background:var(--surface2);border:1px solid var(--border);padding:2px 8px;border-radius:4px;font-size:12px;margin:2px">${i.name}×${i.qty}</span>`).join('')}</td>
-          <td style="font-size:13px">${r['วัตถุประสงค์']}</td>
-          <td style="font-size:13px;white-space:nowrap">${r['วันที่ขอ']}</td>
-          <td><span class="badge ${sc}">${r['สถานะ']}</span></td>
-          <td style="font-size:13px">${r['ผู้อนุมัติ'] || '—'}</td>
-        </tr>`;
-      }).join('')}
-    </tbody>
-  </table>`;
-}
-
-// ===== SETTINGS =====
-function saveScriptUrl() {
-  const url = document.getElementById('scriptUrlInput').value.trim();
-  if (!url) { showToast('กรุณาใส่ URL', 'error'); return; }
-  scriptUrl = url; localStorage.setItem('scriptUrl', url);
-  document.getElementById('configBanner').style.display = 'none';
-  showToast('✅ บันทึก URL เรียบร้อย — รีเฟรชข้อมูล...', 'success');
-  loadPage(currentPage);
-}
-
-function saveScriptUrlFromSettings() {
-  const url = document.getElementById('settingsScriptUrl').value.trim();
-  if (!url) { showToast('กรุณาใส่ URL', 'error'); return; }
-  scriptUrl = url; localStorage.setItem('scriptUrl', url);
-  document.getElementById('configBanner') && (document.getElementById('configBanner').style.display = 'none');
-  showToast('✅ บันทึก URL เรียบร้อย', 'success');
-}
-
-// ===== MODAL =====
-function closeModal(e) { if (e.target === document.getElementById('modalOverlay')) closeModalDirect(); }
-function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('open'); }
-
-// ===== TOAST =====
-function showToast(msg, type = 'success') {
-  const cont = document.getElementById('toastContainer');
-  const icons = { success: '✅', error: '❌', warning: '⚠️' };
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
-  cont.appendChild(toast);
-  setTimeout(() => toast.remove(), 3500);
-}
-
-// ===== LOGOUT =====
-function doLogout() {
-  if (!confirm('ต้องการออกจากระบบ?')) return;
-  currentUser = null; localStorage.removeItem('currentUser');
-  document.getElementById('appPage').style.display = 'none';
-  document.getElementById('loginPage').style.display = 'flex';
-  cart = {};
-}
+  document.getElementById('loadingOverlay').classList.add('hidden');
+})();
 </script>
 </body>
 </html>
