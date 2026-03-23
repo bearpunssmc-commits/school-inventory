@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบเบิกจ่ายพัสดุ</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0f2744;
+  --navy-mid: #1a3a5c;
+  --blue: #1e5fa8;
+  --blue-light: #2d7dd2;
+  --gold: #e8a020;
+  --gold-light: #f5c842;
+  --green: #1a9b5c;
+  --green-light: #22c473;
+  --red: #c0392b;
+  --red-light: #e74c3c;
+  --orange: #d4790a;
+  --bg: #f0f4fa;
+  --surface: #ffffff;
+  --surface2: #f7f9fd;
+  --border: #dde5f0;
+  --text: #1a2a3a;
+  --text-muted: #6b7fa0;
+  --shadow: 0 2px 16px rgba(15,39,68,0.10);
+  --shadow-lg: 0 8px 40px rgba(15,39,68,0.16);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+}
+
+/* ===== LOGIN ===== */
+#loginPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 40%, var(--blue) 100%);
+  position: relative;
+  overflow: hidden;
+}
+#loginPage::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(30,95,168,0.3) 0%, transparent 70%);
+  top: -200px; right: -100px;
+}
+#loginPage::after {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,160,32,0.15) 0%, transparent 70%);
+  bottom: -100px; left: -50px;
+}
+.login-card {
+  background: rgba(255,255,255,0.97);
+  border-radius: 24px;
+  padding: 48px 44px;
+  width: 420px;
+  max-width: 95vw;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.2);
+  position: relative; z-index: 1;
+  animation: fadeUp .5s ease;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.login-logo {
+  width: 72px; height: 72px;
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; margin: 0 auto 20px;
+  box-shadow: 0 8px 24px rgba(15,39,68,0.3);
+}
+.login-title { text-align: center; margin-bottom: 8px; }
+.login-title h1 { font-size: 22px; font-weight: 700; color: var(--navy); }
+.login-title p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+.login-divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+.form-group { margin-bottom: 18px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 7px; }
+.form-input {
+  width: 100%; padding: 12px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 15px;
+  color: var(--text); background: var(--surface2);
+  transition: all .2s;
+  outline: none;
+}
+.form-input:focus {
+  border-color: var(--blue); background: #fff;
+  box-shadow: 0 0 0 3px rgba(30,95,168,0.12);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 24px; border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 15px; font-weight: 600;
+  cursor: pointer; border: none; transition: all .2s;
+  text-decoration: none; white-space: nowrap;
+}
+.btn-primary { background: linear-gradient(135deg, var(--blue), var(--blue-light)); color: #fff; box-shadow: 0 4px 14px rgba(30,95,168,0.35); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(30,95,168,0.45); }
+.btn-primary:active { transform: translateY(0); }
+.btn-success { background: linear-gradient(135deg, var(--green), var(--green-light)); color: #fff; box-shadow: 0 4px 14px rgba(26,155,92,0.3); }
+.btn-success:hover { transform: translateY(-1px); }
+.btn-danger { background: linear-gradient(135deg, var(--red), var(--red-light)); color: #fff; }
+.btn-danger:hover { transform: translateY(-1px); }
+.btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--navy); box-shadow: 0 4px 14px rgba(232,160,32,0.3); }
+.btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text-muted); }
+.btn-outline:hover { border-color: var(--blue); color: var(--blue); background: rgba(30,95,168,0.05); }
+.btn-sm { padding: 7px 14px; font-size: 13px; }
+.btn-full { width: 100%; }
+.btn:disabled { opacity: .6; cursor: not-allowed; transform: none !important; }
+
+/* ===== LAYOUT ===== */
+#appPage { display: none; min-height: 100vh; }
+.sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0; width: 260px;
+  background: linear-gradient(180deg, var(--navy) 0%, var(--navy-mid) 100%);
+  display: flex; flex-direction: column;
+  box-shadow: 4px 0 24px rgba(15,39,68,0.2);
+  z-index: 100;
+}
+.sidebar-header {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sidebar-logo {
+  display: flex; align-items: center; gap: 12px;
+}
+.sidebar-icon {
+  width: 42px; height: 42px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.sidebar-title { color: #fff; font-size: 15px; font-weight: 700; line-height: 1.3; }
+.sidebar-subtitle { color: rgba(255,255,255,0.5); font-size: 11px; margin-top: 2px; }
+
+.sidebar-user {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.user-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue-light), var(--blue));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: #fff; font-weight: 700; flex-shrink: 0;
+}
+.user-info { display: flex; align-items: center; gap: 10px; }
+.user-name { color: #fff; font-size: 13px; font-weight: 600; }
+.user-role {
+  display: inline-block; padding: 2px 8px;
+  background: rgba(232,160,32,0.2); border: 1px solid rgba(232,160,32,0.3);
+  border-radius: 20px; color: var(--gold-light); font-size: 11px; margin-top: 2px;
+}
+
+.nav-section { padding: 12px 0; flex: 1; overflow-y: auto; }
+.nav-section-label {
+  padding: 4px 20px 8px;
+  color: rgba(255,255,255,0.35); font-size: 10px; font-weight: 700;
+  letter-spacing: 1.2px; text-transform: uppercase;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 20px; cursor: pointer;
+  color: rgba(255,255,255,0.65); font-size: 14px; font-weight: 500;
+  transition: all .2s; border-left: 3px solid transparent;
+  margin: 1px 0;
+}
+.nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.nav-item.active {
+  background: rgba(45,125,210,0.2); color: #fff;
+  border-left-color: var(--gold); font-weight: 600;
+}
+.nav-item .nav-icon { font-size: 18px; width: 22px; text-align: center; }
+.nav-badge {
+  margin-left: auto; background: var(--red-light); color: #fff;
+  font-size: 11px; font-weight: 700; padding: 2px 7px;
+  border-radius: 20px; min-width: 20px; text-align: center;
+}
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ===== MAIN ===== */
+.main { margin-left: 260px; min-height: 100vh; }
+.topbar {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 0 32px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+  box-shadow: 0 2px 8px rgba(15,39,68,0.06);
+}
+.page-title { font-size: 20px; font-weight: 700; color: var(--navy); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+
+.content { padding: 28px 32px; }
+
+/* ===== CARDS ===== */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 24px; border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 18px;
+  transition: transform .2s, box-shadow .2s;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.stat-icon {
+  width: 56px; height: 56px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center; font-size: 26px;
+  flex-shrink: 0;
+}
+.stat-icon.blue { background: rgba(30,95,168,0.1); }
+.stat-icon.gold { background: rgba(232,160,32,0.1); }
+.stat-icon.green { background: rgba(26,155,92,0.1); }
+.stat-icon.red { background: rgba(192,57,43,0.1); }
+.stat-value { font-size: 28px; font-weight: 800; color: var(--navy); line-height: 1; }
+.stat-label { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
+
+.card {
+  background: var(--surface); border-radius: var(--radius);
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.card-header {
+  padding: 18px 24px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(135deg, rgba(15,39,68,0.03), rgba(30,95,168,0.03));
+}
+.card-title { font-size: 16px; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+.card-body { padding: 24px; }
+
+/* ===== TABLE ===== */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: linear-gradient(135deg, var(--navy), var(--navy-mid)); }
+th {
+  padding: 12px 16px; text-align: left;
+  color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 600;
+  letter-spacing: 0.3px; white-space: nowrap;
+}
+td {
+  padding: 13px 16px; border-bottom: 1px solid var(--border);
+  font-size: 14px; color: var(--text);
+}
+tbody tr:hover { background: rgba(30,95,168,0.03); }
+tbody tr:last-child td { border-bottom: none; }
+.td-bold { font-weight: 600; color: var(--navy); }
+
+/* ===== BADGES ===== */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 11px; border-radius: 20px;
+  font-size: 12px; font-weight: 600; white-space: nowrap;
+}
+.badge-pending { background: rgba(232,160,32,0.12); color: var(--gold); border: 1px solid rgba(232,160,32,0.25); }
+.badge-approved { background: rgba(26,155,92,0.12); color: var(--green); border: 1px solid rgba(26,155,92,0.25); }
+.badge-rejected { background: rgba(192,57,43,0.12); color: var(--red); border: 1px solid rgba(192,57,43,0.25); }
+.badge-low { background: rgba(192,57,43,0.12); color: var(--red); border: 1px solid rgba(192,57,43,0.25); }
+.badge-ok { background: rgba(26,155,92,0.12); color: var(--green); border: 1px solid rgba(26,155,92,0.25); }
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(10,20,40,0.55); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: 20px;
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--surface); border-radius: 20px;
+  width: 100%; max-width: 560px; max-height: 90vh;
+  overflow-y: auto; box-shadow: var(--shadow-lg);
+  transform: scale(.95) translateY(10px); transition: transform .25s;
+}
+.modal-overlay.open .modal { transform: scale(1) translateY(0); }
+.modal-header {
+  padding: 22px 28px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; background: var(--surface); z-index: 1;
+  border-radius: 20px 20px 0 0;
+}
+.modal-title { font-size: 18px; font-weight: 700; color: var(--navy); }
+.modal-close {
+  width: 32px; height: 32px; border-radius: 50%; border: none;
+  background: var(--surface2); color: var(--text-muted); cursor: pointer;
+  font-size: 18px; display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.modal-close:hover { background: var(--border); color: var(--text); }
+.modal-body { padding: 24px 28px; }
+.modal-footer { padding: 16px 28px 24px; display: flex; gap: 10px; justify-content: flex-end; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-select {
+  width: 100%; padding: 11px 16px;
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 15px; color: var(--text);
+  background: var(--surface2); cursor: pointer; outline: none; transition: all .2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7fa0' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
+}
+.form-select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(30,95,168,0.12); }
+.form-textarea {
+  width: 100%; padding: 11px 16px;
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 15px; color: var(--text);
+  background: var(--surface2); resize: vertical; min-height: 80px; outline: none; transition: all .2s;
+}
+.form-textarea:focus { border-color: var(--blue); background: #fff; box-shadow: 0 0 0 3px rgba(30,95,168,0.12); }
+
+/* ===== CART ===== */
+.cart-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; background: var(--surface2); border-radius: var(--radius-sm);
+  border: 1px solid var(--border); margin-bottom: 8px;
+}
+.cart-item-name { flex: 1; font-size: 14px; font-weight: 500; }
+.qty-input {
+  width: 70px; text-align: center; padding: 7px 10px;
+  border: 1.5px solid var(--border); border-radius: 6px;
+  font-family: inherit; font-size: 14px; outline: none;
+}
+.qty-input:focus { border-color: var(--blue); }
+.cart-remove {
+  width: 28px; height: 28px; border-radius: 50%; border: none;
+  background: rgba(192,57,43,0.1); color: var(--red); cursor: pointer;
+  font-size: 16px; display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.cart-remove:hover { background: var(--red); color: #fff; }
+
+/* ===== TOAST ===== */
+.toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+.toast {
+  background: var(--navy); color: #fff;
+  padding: 14px 20px; border-radius: 12px;
+  box-shadow: var(--shadow-lg); font-size: 14px; font-weight: 500;
+  display: flex; align-items: center; gap: 10px;
+  animation: slideIn .3s ease; max-width: 320px;
+  border-left: 4px solid var(--blue-light);
+}
+.toast.success { border-left-color: var(--green-light); }
+.toast.error { border-left-color: var(--red-light); }
+.toast.warning { border-left-color: var(--gold); }
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ===== SEARCH BAR ===== */
+.search-bar {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.search-input-wrap {
+  position: relative; flex: 1; min-width: 200px;
+}
+.search-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-size: 16px; pointer-events: none;
+}
+.search-input {
+  width: 100%; padding: 10px 16px 10px 38px;
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 14px; outline: none; transition: all .2s;
+  background: var(--surface2);
+}
+.search-input:focus { border-color: var(--blue); background: #fff; box-shadow: 0 0 0 3px rgba(30,95,168,0.12); }
+
+/* ===== MISC ===== */
+.empty-state {
+  text-align: center; padding: 60px 20px; color: var(--text-muted);
+}
+.empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; color: var(--navy); }
+
+.qty-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+.qty-fill { height: 100%; border-radius: 3px; transition: width .3s; }
+.qty-fill.ok { background: var(--green); }
+.qty-fill.low { background: var(--gold); }
+.qty-fill.critical { background: var(--red); }
+
+.tab-bar {
+  display: flex; gap: 4px; padding: 4px;
+  background: var(--surface2); border-radius: var(--radius-sm);
+  border: 1px solid var(--border); width: fit-content; margin-bottom: 20px;
+}
+.tab {
+  padding: 8px 18px; border-radius: 6px; cursor: pointer;
+  font-size: 14px; font-weight: 500; color: var(--text-muted); transition: all .2s;
+  border: none; background: transparent; font-family: inherit;
+}
+.tab.active { background: var(--surface); color: var(--navy); font-weight: 600; box-shadow: var(--shadow); }
+
+.loading-spinner {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 3px solid var(--border); border-top-color: var(--blue);
+  animation: spin .7s linear infinite; margin: 40px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.config-banner {
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  border-radius: var(--radius); padding: 20px 24px; margin-bottom: 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  color: #fff; gap: 16px;
+}
+.config-banner h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.config-banner p { font-size: 13px; opacity: .8; }
+.config-input {
+  padding: 10px 16px; border-radius: var(--radius-sm);
+  border: none; outline: none; font-family: inherit; font-size: 14px;
+  min-width: 340px; background: rgba(255,255,255,0.15); color: #fff;
+}
+.config-input::placeholder { color: rgba(255,255,255,0.5); }
+
+@media (max-width: 1100px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .sidebar { width: 220px; }
+  .main { margin-left: 220px; }
+  .content { padding: 20px 16px; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ===== LOGIN PAGE ===== -->
+<div id="loginPage">
+  <div class="login-card">
+    <div class="login-logo">🏫</div>
+    <div class="login-title">
+      <h1>ระบบเบิกจ่ายพัสดุ</h1>
+      <p>โรงเรียน — กรุณาเข้าสู่ระบบ</p>
+    </div>
+    <hr class="login-divider">
+    <div class="form-group">
+      <label class="form-label">ชื่อผู้ใช้</label>
+      <input type="text" class="form-input" id="loginUser" placeholder="กรอกชื่อผู้ใช้" value="admin">
+    </div>
+    <div class="form-group">
+      <label class="form-label">รหัสผ่าน</label>
+      <input type="password" class="form-input" id="loginPass" placeholder="กรอกรหัสผ่าน" value="admin1234">
+    </div>
+    <div id="loginError" style="color:var(--red);font-size:13px;margin-bottom:12px;display:none;"></div>
+    <button class="btn btn-primary btn-full" id="loginBtn" onclick="doLogin()">
+      🔐 เข้าสู่ระบบ
+    </button>
+    <p style="text-align:center;color:var(--text-muted);font-size:12px;margin-top:16px;">
+      ทดสอบ: admin / admin1234 &nbsp;|&nbsp; teacher01 / pass1234
+    </p>
+  </div>
+</div>
+
+<!-- ===== APP PAGE ===== -->
+<div id="appPage">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="sidebar-icon">🏫</div>
+        <div>
+          <div class="sidebar-title">ระบบพัสดุโรงเรียน</div>
+          <div class="sidebar-subtitle">Supply Management</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-info">
+        <div class="user-avatar" id="sidebarAvatar">A</div>
+        <div>
+          <div class="user-name" id="sidebarName">—</div>
+          <div class="user-role" id="sidebarRole">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">เมนูหลัก</div>
+      <div class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard">
+        <span class="nav-icon">📊</span> ภาพรวม
+      </div>
+      <div class="nav-item" onclick="showPage('supplies')" id="nav-supplies">
+        <span class="nav-icon">📦</span> คลังพัสดุ
+      </div>
+      <div class="nav-item" onclick="showPage('request')" id="nav-request">
+        <span class="nav-icon">📝</span> ขอเบิกพัสดุ
+      </div>
+      <div class="nav-item" onclick="showPage('myRequests')" id="nav-myRequests">
+        <span class="nav-icon">📋</span> รายการของฉัน
+      </div>
+
+      <div class="nav-section-label" id="adminNavLabel" style="display:none">ผู้ดูแลระบบ</div>
+      <div class="nav-item" onclick="showPage('approve')" id="nav-approve" style="display:none">
+        <span class="nav-icon">✅</span> อนุมัติคำขอ
+        <span class="nav-badge" id="pendingBadge" style="display:none">0</span>
+      </div>
+      <div class="nav-item" onclick="showPage('manageSupply')" id="nav-manageSupply" style="display:none">
+        <span class="nav-icon">⚙️</span> จัดการพัสดุ
+      </div>
+      <div class="nav-item" onclick="showPage('allRequests')" id="nav-allRequests" style="display:none">
+        <span class="nav-icon">📑</span> ประวัติทั้งหมด
+      </div>
+      <div class="nav-item" onclick="showPage('settings')" id="nav-settings" style="display:none">
+        <span class="nav-icon">🔧</span> ตั้งค่าระบบ
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn btn-outline btn-full btn-sm" onclick="doLogout()">
+        🚪 ออกจากระบบ
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="topbar">
+      <div class="page-title" id="pageTitle">📊 ภาพรวมระบบ</div>
+      <div class="topbar-right">
+        <span style="color:var(--text-muted);font-size:13px;" id="currentDate"></span>
+        <button class="btn btn-outline btn-sm" onclick="loadCurrentPage()">🔄 รีเฟรช</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div id="page-dashboard">
+        <div id="configBanner" class="config-banner" style="display:none">
+          <div>
+            <h3>⚙️ ยังไม่ได้เชื่อม Google Sheets</h3>
+            <p>ใส่ URL ของ Google Apps Script Web App เพื่อเริ่มใช้งาน</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <input type="text" class="config-input" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/XXXXX/exec">
+            <button class="btn btn-gold btn-sm" onclick="saveScriptUrl()">บันทึก</button>
+          </div>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card"><div class="stat-icon blue">📦</div><div><div class="stat-value" id="stat1">—</div><div class="stat-label">พัสดุทั้งหมด</div></div></div>
+          <div class="stat-card"><div class="stat-icon red">⚠️</div><div><div class="stat-value" id="stat2">—</div><div class="stat-label">พัสดุใกล้หมด</div></div></div>
+          <div class="stat-card"><div class="stat-icon gold">🕐</div><div><div class="stat-value" id="stat3">—</div><div class="stat-label">รอการอนุมัติ</div></div></div>
+          <div class="stat-card"><div class="stat-icon green">✅</div><div><div class="stat-value" id="stat4">—</div><div class="stat-label">อนุมัติแล้ว</div></div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📦 พัสดุใกล้หมด</div>
+          </div>
+          <div class="card-body" id="lowStockList">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SUPPLIES ===== -->
+      <div id="page-supplies" style="display:none">
+        <div class="search-bar">
+          <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="supplySearch" placeholder="ค้นหาพัสดุ..." oninput="filterSupplies()">
+          </div>
+          <select class="form-select" id="categoryFilter" onchange="filterSupplies()" style="width:160px">
+            <option value="">ทุกหมวดหมู่</option>
+          </select>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📦 รายการพัสดุทั้งหมด</div>
+          </div>
+          <div class="table-wrap" id="suppliesTable">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== REQUEST ===== -->
+      <div id="page-request" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 340px;gap:24px">
+          <div>
+            <div class="card" style="margin-bottom:20px">
+              <div class="card-header"><div class="card-title">🔍 เลือกพัสดุที่ต้องการเบิก</div></div>
+              <div class="card-body">
+                <div class="search-bar" style="margin-bottom:12px">
+                  <div class="search-input-wrap" style="flex:1">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" id="reqSearch" placeholder="ค้นหาพัสดุ..." oninput="filterReqSupplies()">
+                  </div>
+                </div>
+                <div id="reqSupplyList" style="max-height:380px;overflow-y:auto;"></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card" style="position:sticky;top:80px">
+              <div class="card-header"><div class="card-title">🛒 รายการเบิก (<span id="cartCount">0</span>)</div></div>
+              <div class="card-body">
+                <div id="cartItems" style="max-height:280px;overflow-y:auto;margin-bottom:16px;"></div>
+                <div class="form-group">
+                  <label class="form-label">วัตถุประสงค์การใช้ <span style="color:var(--red)">*</span></label>
+                  <textarea class="form-textarea" id="reqPurpose" placeholder="ระบุวัตถุประสงค์..."></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">แผนก/ห้องเรียน</label>
+                  <input type="text" class="form-input" id="reqDept" placeholder="เช่น ห้อง ม.3/2">
+                </div>
+                <button class="btn btn-primary btn-full" onclick="submitRequest()">📤 ส่งคำขอเบิก</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MY REQUESTS ===== -->
+      <div id="page-myRequests" style="display:none">
+        <div class="tab-bar">
+          <button class="tab active" onclick="filterMyReq('')" id="tabAll">ทั้งหมด</button>
+          <button class="tab" onclick="filterMyReq('รอดำเนินการ')" id="tabPending">รอดำเนินการ</button>
+          <button class="tab" onclick="filterMyReq('อนุมัติ')" id="tabApproved">อนุมัติ</button>
+          <button class="tab" onclick="filterMyReq('ไม่อนุมัติ')" id="tabRejected">ไม่อนุมัติ</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">📋 รายการขอเบิกของฉัน</div></div>
+          <div class="table-wrap" id="myReqTable"><div class="loading-spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- ===== APPROVE ===== -->
+      <div id="page-approve" style="display:none">
+        <div class="card">
+          <div class="card-header"><div class="card-title">✅ รายการรออนุมัติ</div></div>
+          <div class="table-wrap" id="approveTable"><div class="loading-spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- ===== MANAGE SUPPLY ===== -->
+      <div id="page-manageSupply" style="display:none">
+        <div style="margin-bottom:20px;display:flex;justify-content:flex-end;">
+          <button class="btn btn-primary" onclick="openAddSupplyModal()">➕ เพิ่มพัสดุใหม่</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">⚙️ จัดการพัสดุ</div></div>
+          <div class="table-wrap" id="manageTable"><div class="loading-spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- ===== ALL REQUESTS ===== -->
+      <div id="page-allRequests" style="display:none">
+        <div class="card">
+          <div class="card-header"><div class="card-title">📑 ประวัติการเบิกจ่ายทั้งหมด</div></div>
+          <div class="table-wrap" id="allReqTable"><div class="loading-spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- ===== SETTINGS ===== -->
+      <div id="page-settings" style="display:none">
+        <div class="card">
+          <div class="card-header"><div class="card-title">🔧 ตั้งค่าระบบ</div></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">🔗 Google Apps Script Web App URL</label>
+              <div style="display:flex;gap:10px">
+                <input type="text" class="form-input" id="settingsScriptUrl" placeholder="https://script.google.com/macros/s/XXXXX/exec">
+                <button class="btn btn-primary" onclick="saveScriptUrlFromSettings()">บันทึก</button>
+              </div>
+              <p style="color:var(--text-muted);font-size:12px;margin-top:8px">
+                URL ที่ได้จากการ Deploy Google Apps Script เป็น Web App
+              </p>
+            </div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:24px 0">
+            <div class="form-group">
+              <label class="form-label">📋 ขั้นตอนการตั้งค่า</label>
+              <ol style="padding-left:20px;line-height:2;color:var(--text-muted);font-size:14px">
+                <li>เปิด <a href="https://sheets.google.com" target="_blank" style="color:var(--blue)">Google Sheets</a> และสร้าง Spreadsheet ใหม่ — จดจำ <strong>Sheet ID</strong> (จาก URL)</li>
+                <li>ไปที่ <a href="https://script.google.com" target="_blank" style="color:var(--blue)">Google Apps Script</a> → สร้างโปรเจ็กต์ใหม่</li>
+                <li>วางโค้ดจากไฟล์ <strong>Code.gs</strong> ที่ดาวน์โหลด</li>
+                <li>แก้ไข <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">SHEET_ID</code> ให้เป็น ID ของ Google Sheet คุณ</li>
+                <li>รัน <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">setupSheets()</code> เพื่อสร้าง Sheet header และข้อมูลตัวอย่าง</li>
+                <li>Deploy → New Deployment → Web App → Execute as "Me" → Access "Anyone"</li>
+                <li>คัดลอก URL ที่ได้มาใส่ในช่องด้านบน</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Modal</div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let currentUser = null;
+let scriptUrl = localStorage.getItem('scriptUrl') || '';
+let allSupplies = [];
+let allMyReqs = [];
+let currentPage = 'dashboard';
+let cart = {};
+let reqFilter = '';
+
+// ===== INIT =====
+window.onload = () => {
+  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('th-TH', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  const saved = localStorage.getItem('currentUser');
+  if (saved) {
+    currentUser = JSON.parse(saved);
+    initApp();
+  }
+};
+
+// ===== LOGIN =====
+async function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value.trim();
+  const btn = document.getElementById('loginBtn');
+  const err = document.getElementById('loginError');
+
+  if (!u || !p) { err.textContent = 'กรุณากรอกข้อมูลให้ครบ'; err.style.display = 'block'; return; }
+
+  btn.disabled = true; btn.textContent = '⏳ กำลังเข้าสู่ระบบ...';
+  err.style.display = 'none';
+
+  if (!scriptUrl) {
+    // Demo mode
+    const demoUsers = {
+      'admin': { id:'U001', username:'admin', name:'ผู้ดูแลระบบ', role:'admin', department:'ธุรการ', password:'admin1234' },
+      'teacher01': { id:'U002', username:'teacher01', name:'นายสมชาย ใจดี', role:'user', department:'ห้อง ม.1/1', password:'pass1234' }
+    };
+    const user = demoUsers[u];
+    if (user && user.password === p) {
+      currentUser = user;
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      btn.disabled = false; btn.textContent = '🔐 เข้าสู่ระบบ';
+      initApp();
+    } else {
+      err.textContent = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'; err.style.display = 'block';
+      btn.disabled = false; btn.textContent = '🔐 เข้าสู่ระบบ';
+    }
+    return;
+  }
+
+  try {
+    const res = await apiCall({ action: 'login', username: u, password: p });
+    if (res.success) {
+      currentUser = res.user;
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      initApp();
+    } else {
+      err.textContent = res.message; err.style.display = 'block';
+    }
+  } catch (e) {
+    err.textContent = 'เชื่อมต่อไม่ได้ — ตรวจสอบ Script URL หรือใช้ Demo Mode'; err.style.display = 'block';
+  }
+
+  btn.disabled = false; btn.textContent = '🔐 เข้าสู่ระบบ';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('loginPage').style.display !== 'none') doLogin();
+});
+
+function initApp() {
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('appPage').style.display = 'block';
+
+  document.getElementById('sidebarName').textContent = currentUser.name || currentUser.username;
+  document.getElementById('sidebarRole').textContent = currentUser.role === 'admin' ? '👑 ผู้ดูแล' : '👤 ผู้ใช้';
+  document.getElementById('sidebarAvatar').textContent = (currentUser.name || currentUser.username).charAt(0).toUpperCase();
+
+  if (document.getElementById('reqDept')) document.getElementById('reqDept').value = currentUser.department || '';
+
+  if (currentUser.role === 'admin') {
+    document.getElementById('adminNavLabel').style.display = 'block';
+    document.getElementById('nav-approve').style.display = 'flex';
+    document.getElementById('nav-manageSupply').style.display = 'flex';
+    document.getElementById('nav-allRequests').style.display = 'flex';
+    document.getElementById('nav-settings').style.display = 'flex';
+  }
+
+  if (!scriptUrl) {
+    document.getElementById('configBanner').style.display = 'flex';
+    showToast('ยังไม่ได้ตั้งค่า Script URL — อยู่ใน Demo Mode', 'warning');
+  }
+
+  showPage('dashboard');
+  loadDemoData();
+}
+
+// ===== DEMO DATA =====
+let demoSupplies = [
+  { รหัส:'S001', ชื่อพัสดุ:'กระดาษ A4', หน่วย:'รีม', จำนวนคงเหลือ:50, จำนวนขั้นต่ำ:10, หมวดหมู่:'เครื่องเขียน' },
+  { รหัส:'S002', ชื่อพัสดุ:'ปากกาลูกลื่น', หน่วย:'แท่ง', จำนวนคงเหลือ:8, จำนวนขั้นต่ำ:20, หมวดหมู่:'เครื่องเขียน' },
+  { รหัส:'S003', ชื่อพัสดุ:'แฟ้มเอกสาร', หน่วย:'เล่ม', จำนวนคงเหลือ:30, จำนวนขั้นต่ำ:5, หมวดหมู่:'เครื่องเขียน' },
+  { รหัส:'S004', ชื่อพัสดุ:'หมึกปริ้นเตอร์', หน่วย:'กล่อง', จำนวนคงเหลือ:2, จำนวนขั้นต่ำ:3, หมวดหมู่:'อุปกรณ์' },
+  { รหัส:'S005', ชื่อพัสดุ:'กาว UHU', หน่วย:'หลอด', จำนวนคงเหลือ:25, จำนวนขั้นต่ำ:5, หมวดหมู่:'เครื่องเขียน' },
+  { รหัส:'S006', ชื่อพัสดุ:'ดินสอ 2B', หน่วย:'แท่ง', จำนวนคงเหลือ:60, จำนวนขั้นต่ำ:20, หมวดหมู่:'เครื่องเขียน' },
+  { รหัส:'S007', ชื่อพัสดุ:'ไม้บรรทัด 30cm', หน่วย:'อัน', จำนวนคงเหลือ:15, จำนวนขั้นต่ำ:10, หมวดหมู่:'เครื่องเขียน' },
+  { รหัส:'S008', ชื่อพัสดุ:'กรรไกร', หน่วย:'อัน', จำนวนคงเหลือ:5, จำนวนขั้นต่ำ:5, หมวดหมู่:'อุปกรณ์' },
+];
+let demoRequests = [
+  { รหัส:'R001', ผู้เบิก:'นายสมชาย ใจดี', แผนก:'ห้อง ม.1/1', รายการ:[{id:'S001',name:'กระดาษ A4',qty:5,unit:'รีม'}], วัตถุประสงค์:'ใช้ในการสอน', สถานะ:'รอดำเนินการ', วันที่ขอ:'23/3/2568 09:00', ผู้อนุมัติ:'', วันที่อนุมัติ:'' },
+  { รหัส:'R002', ผู้เบิก:'นางสาวสมหญิง รักเรียน', แผนก:'ห้อง ม.2/3', รายการ:[{id:'S002',name:'ปากกาลูกลื่น',qty:10,unit:'แท่ง'},{id:'S006',name:'ดินสอ 2B',qty:20,unit:'แท่ง'}], วัตถุประสงค์:'สอบปลายภาค', สถานะ:'อนุมัติ', วันที่ขอ:'22/3/2568 14:00', ผู้อนุมัติ:'ผู้ดูแลระบบ', วันที่อนุมัติ:'22/3/2568 15:30' },
+];
+
+function loadDemoData() {
+  allSupplies = [...demoSupplies];
+  allMyReqs = demoRequests.filter(r => r.ผู้เบิก === currentUser.name || currentUser.role === 'admin');
+}
+
+// ===== API =====
+async function apiCall(data) {
+  if (!scriptUrl) return null;
+  const res = await fetch(scriptUrl, {
+    method: 'POST', redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+async function loadFromAPI(action, params = {}) {
+  if (!scriptUrl) return null;
+  try {
+    const res = await apiCall({ action, ...params });
+    return res;
+  } catch (e) {
+    showToast('เชื่อมต่อ Google Sheets ไม่ได้ — ใช้ข้อมูล Demo', 'warning');
+    return null;
+  }
+}
+
+// ===== NAVIGATION =====
+const pageTitles = {
+  dashboard: '📊 ภาพรวมระบบ', supplies: '📦 คลังพัสดุ', request: '📝 ขอเบิกพัสดุ',
+  myRequests: '📋 รายการของฉัน', approve: '✅ อนุมัติคำขอ', manageSupply: '⚙️ จัดการพัสดุ',
+  allRequests: '📑 ประวัติทั้งหมด', settings: '🔧 ตั้งค่าระบบ'
+};
+
+function showPage(page) {
+  document.querySelectorAll('[id^="page-"]').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+  document.getElementById('page-' + page).style.display = 'block';
+  const navEl = document.getElementById('nav-' + page);
+  if (navEl) navEl.classList.add('active');
+  document.getElementById('pageTitle').textContent = pageTitles[page] || '';
+  currentPage = page;
+
+  loadPage(page);
+}
+
+async function loadPage(page) {
+  switch (page) {
+    case 'dashboard': await loadDashboard(); break;
+    case 'supplies': await loadSupplies(); break;
+    case 'request': await loadRequestPage(); break;
+    case 'myRequests': await loadMyRequests(); break;
+    case 'approve': await loadApprove(); break;
+    case 'manageSupply': await loadManage(); break;
+    case 'allRequests': await loadAllRequests(); break;
+    case 'settings':
+      const el = document.getElementById('settingsScriptUrl');
+      if (el) el.value = scriptUrl;
+      break;
+  }
+}
+
+function loadCurrentPage() { loadPage(currentPage); }
+
+// ===== DASHBOARD =====
+async function loadDashboard() {
+  const res = scriptUrl ? await loadFromAPI('getStats') : null;
+  const sups = scriptUrl ? (await loadFromAPI('getSupplies'))?.data || [] : demoSupplies;
+  allSupplies = sups.length ? sups : demoSupplies;
+
+  const low = allSupplies.filter(s => Number(s['จำนวนคงเหลือ']) <= Number(s['จำนวนขั้นต่ำ']));
+
+  if (res?.data) {
+    document.getElementById('stat1').textContent = res.data.totalSupplies;
+    document.getElementById('stat2').textContent = res.data.lowStock;
+    document.getElementById('stat3').textContent = res.data.pendingRequests;
+    document.getElementById('stat4').textContent = res.data.approvedRequests;
+    const b = document.getElementById('pendingBadge');
+    if (res.data.pendingRequests > 0) { b.textContent = res.data.pendingRequests; b.style.display = 'inline-block'; }
+  } else {
+    const reqs = demoRequests;
+    document.getElementById('stat1').textContent = allSupplies.length;
+    document.getElementById('stat2').textContent = low.length;
+    document.getElementById('stat3').textContent = reqs.filter(r => r.สถานะ === 'รอดำเนินการ').length;
+    document.getElementById('stat4').textContent = reqs.filter(r => r.สถานะ === 'อนุมัติ').length;
+  }
+
+  const container = document.getElementById('lowStockList');
+  if (!low.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><h3>พัสดุทั้งหมดอยู่ในระดับปกติ</h3></div>';
+    return;
+  }
+  container.innerHTML = `
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>ชื่อพัสดุ</th><th>หมวดหมู่</th><th>คงเหลือ</th><th>ขั้นต่ำ</th><th>สถานะ</th></tr></thead>
+      <tbody>
+        ${low.map(s => {
+          const qty = Number(s['จำนวนคงเหลือ']), min = Number(s['จำนวนขั้นต่ำ']);
+          const pct = Math.min(100, Math.round(qty / min * 100));
+          const cl = qty === 0 ? 'critical' : qty < min ? 'low' : 'ok';
+          return `<tr>
+            <td class="td-bold">${s['ชื่อพัสดุ']}</td>
+            <td><span class="badge badge-ok">${s['หมวดหมู่']}</span></td>
+            <td>${qty} ${s['หน่วย']}<div class="qty-bar"><div class="qty-fill ${cl}" style="width:${pct}%"></div></div></td>
+            <td>${min} ${s['หน่วย']}</td>
+            <td><span class="badge ${qty === 0 ? 'badge-rejected' : 'badge-pending'}">${qty === 0 ? '⛔ หมดแล้ว' : '⚠️ ใกล้หมด'}</span></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+    </div>`;
+}
+
+// ===== SUPPLIES VIEW =====
+async function loadSupplies() {
+  const res = scriptUrl ? await loadFromAPI('getSupplies') : null;
+  allSupplies = res?.data || demoSupplies;
+  renderSuppliesTable();
+  populateCategoryFilter();
+}
+
+function populateCategoryFilter() {
+  const cats = [...new Set(allSupplies.map(s => s['หมวดหมู่']))];
+  const sel = document.getElementById('categoryFilter');
+  if (sel) {
+    sel.innerHTML = '<option value="">ทุกหมวดหมู่</option>' + cats.map(c => `<option>${c}</option>`).join('');
+  }
+}
+
+function renderSuppliesTable(filtered) {
+  const data = filtered || allSupplies;
+  const cont = document.getElementById('suppliesTable');
+  if (!data.length) { cont.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><h3>ไม่พบพัสดุ</h3></div>'; return; }
+
+  cont.innerHTML = `<table>
+    <thead><tr><th>รหัส</th><th>ชื่อพัสดุ</th><th>หมวดหมู่</th><th>หน่วย</th><th>คงเหลือ</th><th>ขั้นต่ำ</th><th>สถานะ</th></tr></thead>
+    <tbody>
+      ${data.map(s => {
+        const qty = Number(s['จำนวนคงเหลือ']), min = Number(s['จำนวนขั้นต่ำ']);
+        const isLow = qty <= min;
+        const pct = Math.min(100, min > 0 ? Math.round(qty / (min * 2) * 100) : 100);
+        const cl = qty === 0 ? 'critical' : isLow ? 'low' : 'ok';
+        return `<tr>
+          <td style="color:var(--text-muted);font-size:12px">${s['รหัส']}</td>
+          <td class="td-bold">${s['ชื่อพัสดุ']}</td>
+          <td><span class="badge badge-ok" style="font-size:11px">${s['หมวดหมู่']}</span></td>
+          <td>${s['หน่วย']}</td>
+          <td>${qty}<div class="qty-bar"><div class="qty-fill ${cl}" style="width:${pct}%"></div></div></td>
+          <td>${min}</td>
+          <td><span class="badge ${isLow ? 'badge-low' : 'badge-approved'}">${isLow ? (qty === 0 ? '⛔ หมด' : '⚠️ ต่ำ') : '✅ ปกติ'}</span></td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  </table>`;
+}
+
+function filterSupplies() {
+  const q = document.getElementById('supplySearch').value.toLowerCase();
+  const cat = document.getElementById('categoryFilter').value;
+  const filtered = allSupplies.filter(s =>
+    s['ชื่อพัสดุ'].toLowerCase().includes(q) &&
+    (cat === '' || s['หมวดหมู่'] === cat)
+  );
+  renderSuppliesTable(filtered);
+}
+
+// ===== REQUEST PAGE =====
+async function loadRequestPage() {
+  const res = scriptUrl ? await loadFromAPI('getSupplies') : null;
+  allSupplies = res?.data || demoSupplies;
+  cart = {};
+  renderCart();
+  renderReqSupplies();
+}
+
+function renderReqSupplies(filtered) {
+  const data = filtered || allSupplies;
+  const cont = document.getElementById('reqSupplyList');
+  if (!data.length) { cont.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><h3>ไม่พบพัสดุ</h3></div>'; return; }
+
+  cont.innerHTML = data.map(s => {
+    const qty = Number(s['จำนวนคงเหลือ']);
+    const inCart = cart[s['รหัส']];
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1.5px solid ${inCart?'var(--blue)':'var(--border)'};border-radius:10px;margin-bottom:8px;background:${inCart?'rgba(30,95,168,0.05)':'var(--surface2)'}">
+      <div>
+        <div style="font-weight:600;font-size:14px">${s['ชื่อพัสดุ']}</div>
+        <div style="color:var(--text-muted);font-size:12px">คงเหลือ: ${qty} ${s['หน่วย']}</div>
+      </div>
+      <button class="btn ${inCart ? 'btn-outline' : 'btn-primary'} btn-sm" onclick="toggleCart('${s['รหัส']}','${s['ชื่อพัสดุ']}','${s['หน่วย']}',${qty})" ${qty <= 0 ? 'disabled' : ''}>
+        ${inCart ? '✓ เพิ่มแล้ว' : '+ เพิ่ม'}
+      </button>
+    </div>`;
+  }).join('');
+}
+
+function filterReqSupplies() {
+  const q = document.getElementById('reqSearch').value.toLowerCase();
+  renderReqSupplies(allSupplies.filter(s => s['ชื่อพัสดุ'].toLowerCase().includes(q)));
+}
+
+function toggleCart(id, name, unit, maxQty) {
+  if (cart[id]) {
+    delete cart[id];
+  } else {
+    cart[id] = { id, name, unit, qty: 1, max: maxQty };
+  }
+  renderCart();
+  renderReqSupplies();
+}
+
+function renderCart() {
+  const items = Object.values(cart);
+  document.getElementById('cartCount').textContent = items.length;
+
+  const cont = document.getElementById('cartItems');
+  if (!items.length) {
+    cont.innerHTML = '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px">ยังไม่มีรายการ</div>';
+    return;
+  }
+  cont.innerHTML = items.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-name">${item.name}</div>
+      <input type="number" class="qty-input" value="${item.qty}" min="1" max="${item.max}"
+        onchange="updateQty('${item.id}', this.value)">
+      <span style="color:var(--text-muted);font-size:12px">${item.unit}</span>
+      <button class="cart-remove" onclick="removeCart('${item.id}')">✕</button>
+    </div>`).join('');
+}
+
+function updateQty(id, val) {
+  if (cart[id]) {
+    const n = Math.max(1, Math.min(cart[id].max, parseInt(val) || 1));
+    cart[id].qty = n;
+  }
+}
+
+function removeCart(id) {
+  delete cart[id];
+  renderCart();
+  renderReqSupplies();
+}
+
+async function submitRequest() {
+  const items = Object.values(cart);
+  if (!items.length) { showToast('กรุณาเลือกพัสดุอย่างน้อย 1 รายการ', 'error'); return; }
+  const purpose = document.getElementById('reqPurpose').value.trim();
+  if (!purpose) { showToast('กรุณาระบุวัตถุประสงค์', 'error'); return; }
+
+  const dept = document.getElementById('reqDept').value.trim() || currentUser.department || '';
+
+  const payload = {
+    action: 'createRequest',
+    requester: currentUser.name || currentUser.username,
+    department: dept, purpose,
+    items: items.map(i => ({ id: i.id, name: i.name, qty: i.qty, unit: i.unit }))
+  };
+
+  if (scriptUrl) {
+    const res = await apiCall(payload);
+    if (res?.success) { showToast('✅ ส่งคำขอเบิกเรียบร้อย'); cart = {}; renderCart(); }
+    else showToast(res?.message || 'เกิดข้อผิดพลาด', 'error');
+  } else {
+    const newReq = {
+      รหัส: 'R' + Date.now(),
+      ผู้เบิก: currentUser.name || currentUser.username,
+      แผนก: dept,
+      รายการ: items.map(i => ({ id: i.id, name: i.name, qty: i.qty, unit: i.unit })),
+      วัตถุประสงค์: purpose, สถานะ: 'รอดำเนินการ',
+      วันที่ขอ: new Date().toLocaleString('th-TH'), ผู้อนุมัติ: '', วันที่อนุมัติ: ''
+    };
+    demoRequests.unshift(newReq);
+    showToast('✅ ส่งคำขอเบิกเรียบร้อย (Demo)');
+    cart = {}; renderCart(); renderReqSupplies();
+  }
+}
+
+// ===== MY REQUESTS =====
+async function loadMyRequests() {
+  const res = scriptUrl ? await loadFromAPI('getRequests', { requester: currentUser.name }) : null;
+  allMyReqs = res?.data || demoRequests.filter(r => r['ผู้เบิก'] === (currentUser.name || currentUser.username) || currentUser.role === 'admin');
+  renderMyReqs(allMyReqs);
+}
+
+function filterMyReq(status) {
+  document.querySelectorAll('.tab-bar .tab').forEach(t => t.classList.remove('active'));
+  const map = {'':'tabAll','รอดำเนินการ':'tabPending','อนุมัติ':'tabApproved','ไม่อนุมัติ':'tabRejected'};
+  document.getElementById(map[status])?.classList.add('active');
+  const filtered = status ? allMyReqs.filter(r => r['สถานะ'] === status) : allMyReqs;
+  renderMyReqs(filtered);
+}
+
+function renderMyReqs(data) {
+  const cont = document.getElementById('myReqTable');
+  if (!data.length) { cont.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><h3>ไม่มีรายการ</h3></div>'; return; }
+
+  cont.innerHTML = `<table>
+    <thead><tr><th>รหัส</th><th>รายการพัสดุ</th><th>วัตถุประสงค์</th><th>วันที่ขอ</th><th>สถานะ</th><th>ผู้อนุมัติ</th></tr></thead>
+    <tbody>
+      ${data.map(r => {
+        const items = Array.isArray(r['รายการ']) ? r['รายการ'] : [];
+        const sc = r['สถานะ'] === 'อนุมัติ' ? 'badge-approved' : r['สถานะ'] === 'ไม่อนุมัติ' ? 'badge-rejected' : 'badge-pending';
+        return `<tr>
+          <td style="font-size:12px;color:var(--text-muted)">${r['รหัส']}</td>
+          <td>${items.map(i => `<span style="display:inline-block;background:var(--surface2);border:1px solid var(--border);padding:2px 8px;border-radius:4px;font-size:12px;margin:2px">${i.name} ×${i.qty}</span>`).join('')}</td>
+          <td style="max-width:180px;font-size:13px">${r['วัตถุประสงค์']}</td>
+          <td style="font-size:13px;white-space:nowrap">${r['วันที่ขอ']}</td>
+          <td><span class="badge ${sc}">${r['สถานะ']}</span></td>
+          <td style="font-size:13px">${r['ผู้อนุมัติ'] || '—'}</td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  </table>`;
+}
+
+// ===== APPROVE =====
+async function loadApprove() {
+  const res = scriptUrl ? await loadFromAPI('getRequests', { status: 'รอดำเนินการ' }) : null;
+  const data = res?.data || demoRequests.filter(r => r['สถานะ'] === 'รอดำเนินการ');
+  const cont = document.getElementById('approveTable');
+
+  if (!data.length) { cont.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><h3>ไม่มีรายการรออนุมัติ</h3></div>'; return; }
+
+  cont.innerHTML = `<table>
+    <thead><tr><th>รหัส</th><th>ผู้เบิก</th><th>แผนก</th><th>รายการพัสดุ</th><th>วัตถุประสงค์</th><th>วันที่ขอ</th><th>การดำเนินการ</th></tr></thead>
+    <tbody>
+      ${data.map(r => {
+        const items = Array.isArray(r['รายการ']) ? r['รายการ'] : [];
+        return `<tr>
+          <td style="font-size:12px;color:var(--text-muted)">${r['รหัส']}</td>
+          <td class="td-bold">${r['ผู้เบิก']}</td>
+          <td style="font-size:13px">${r['แผนก']}</td>
+          <td>${items.map(i => `<span style="display:inline-block;background:var(--surface2);border:1px solid var(--border);padding:2px 8px;border-radius:4px;font-size:12px;margin:2px">${i.name} ×${i.qty}</span>`).join('')}</td>
+          <td style="font-size:13px">${r['วัตถุประสงค์']}</td>
+          <td style="font-size:13px;white-space:nowrap">${r['วันที่ขอ']}</td>
+          <td style="white-space:nowrap">
+            <button class="btn btn-success btn-sm" onclick="approveReq('${r['รหัส']}')">✅ อนุมัติ</button>
+            <button class="btn btn-danger btn-sm" onclick="rejectReq('${r['รหัส']}')">❌ ปฏิเสธ</button>
+          </td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  </table>`;
+}
+
+async function approveReq(id) {
+  if (!confirm('อนุมัติคำขอ ' + id + ' ?')) return;
+  if (scriptUrl) {
+    const res = await apiCall({ action: 'approveRequest', id, approver: currentUser.name });
+    if (res?.success) { showToast('✅ อนุมัติเรียบร้อย', 'success'); loadApprove(); }
+    else showToast(res?.message || 'เกิดข้อผิดพลาด', 'error');
+  } else {
+    const r = demoRequests.find(x => x['รหัส'] === id);
+    if (r) { r['สถานะ'] = 'อนุมัติ'; r['ผู้อนุมัติ'] = currentUser.name; r['วันที่อนุมัติ'] = new Date().toLocaleString('th-TH'); }
+    showToast('✅ อนุมัติเรียบร้อย (Demo)', 'success'); loadApprove();
+  }
+}
+
+async function rejectReq(id) {
+  if (!confirm('ปฏิเสธคำขอ ' + id + ' ?')) return;
+  if (scriptUrl) {
+    const res = await apiCall({ action: 'rejectRequest', id, approver: currentUser.name });
+    if (res?.success) { showToast('ปฏิเสธเรียบร้อย', 'warning'); loadApprove(); }
+    else showToast(res?.message, 'error');
+  } else {
+    const r = demoRequests.find(x => x['รหัส'] === id);
+    if (r) { r['สถานะ'] = 'ไม่อนุมัติ'; r['ผู้อนุมัติ'] = currentUser.name; }
+    showToast('ปฏิเสธเรียบร้อย (Demo)', 'warning'); loadApprove();
+  }
+}
+
+// ===== MANAGE SUPPLY =====
+async function loadManage() {
+  const res = scriptUrl ? await loadFromAPI('getSupplies') : null;
+  allSupplies = res?.data || demoSupplies;
+  renderManageTable();
+}
+
+function renderManageTable() {
+  const cont = document.getElementById('manageTable');
+  if (!allSupplies.length) { cont.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><h3>ยังไม่มีพัสดุ</h3></div>'; return; }
+
+  cont.innerHTML = `<table>
+    <thead><tr><th>รหัส</th><th>ชื่อพัสดุ</th><th>หมวดหมู่</th><th>หน่วย</th><th>คงเหลือ</th><th>ขั้นต่ำ</th><th>การดำเนินการ</th></tr></thead>
+    <tbody>
+      ${allSupplies.map(s => `<tr>
+        <td style="font-size:12px;color:var(--text-muted)">${s['รหัส']}</td>
+        <td class="td-bold">${s['ชื่อพัสดุ']}</td>
+        <td>${s['หมวดหมู่']}</td>
+        <td>${s['หน่วย']}</td>
+        <td>${s['จำนวนคงเหลือ']}</td>
+        <td>${s['จำนวนขั้นต่ำ']}</td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-outline btn-sm" onclick='openEditSupply(${JSON.stringify(s)})'>✏️ แก้ไข</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteSupply('${s['รหัส']}')">🗑️</button>
+        </td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function openAddSupplyModal() {
+  document.getElementById('modalTitle').textContent = '➕ เพิ่มพัสดุใหม่';
+  document.getElementById('modalBody').innerHTML = supplyForm({});
+  document.getElementById('modalFooter').innerHTML = `
+    <button class="btn btn-outline" onclick="closeModalDirect()">ยกเลิก</button>
+    <button class="btn btn-primary" onclick="saveSupply()">💾 บันทึก</button>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function openEditSupply(s) {
+  document.getElementById('modalTitle').textContent = '✏️ แก้ไขพัสดุ';
+  document.getElementById('modalBody').innerHTML = supplyForm(s);
+  document.getElementById('modalFooter').innerHTML = `
+    <button class="btn btn-outline" onclick="closeModalDirect()">ยกเลิก</button>
+    <button class="btn btn-primary" onclick="saveSupply('${s['รหัส']}')">💾 บันทึก</button>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function supplyForm(s) {
+  return `
+    <div class="form-group"><label class="form-label">ชื่อพัสดุ *</label><input class="form-input" id="fName" value="${s['ชื่อพัสดุ']||''}"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">หน่วย *</label><input class="form-input" id="fUnit" value="${s['หน่วย']||''}"></div>
+      <div class="form-group"><label class="form-label">หมวดหมู่</label>
+        <select class="form-select" id="fCat">
+          <option ${s['หมวดหมู่']==='เครื่องเขียน'?'selected':''}>เครื่องเขียน</option>
+          <option ${s['หมวดหมู่']==='อุปกรณ์'?'selected':''}>อุปกรณ์</option>
+          <option ${s['หมวดหมู่']==='วัสดุ'?'selected':''}>วัสดุ</option>
+          <option ${s['หมวดหมู่']==='อื่นๆ'?'selected':''}>อื่นๆ</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">จำนวนคงเหลือ</label><input class="form-input" id="fQty" type="number" min="0" value="${s['จำนวนคงเหลือ']||0}"></div>
+      <div class="form-group"><label class="form-label">จำนวนขั้นต่ำ</label><input class="form-input" id="fMin" type="number" min="0" value="${s['จำนวนขั้นต่ำ']||0}"></div>
+    </div>`;
+}
+
+async function saveSupply(id) {
+  const name = document.getElementById('fName').value.trim();
+  const unit = document.getElementById('fUnit').value.trim();
+  if (!name || !unit) { showToast('กรุณากรอกชื่อและหน่วย', 'error'); return; }
+
+  const data = {
+    name, unit,
+    quantity: document.getElementById('fQty').value,
+    minStock: document.getElementById('fMin').value,
+    category: document.getElementById('fCat').value
+  };
+
+  if (scriptUrl) {
+    const payload = id ? { action: 'updateSupply', id, ...data } : { action: 'addSupply', ...data };
+    const res = await apiCall(payload);
+    if (res?.success) { showToast('💾 บันทึกเรียบร้อย', 'success'); closeModalDirect(); loadManage(); }
+    else showToast(res?.message || 'เกิดข้อผิดพลาด', 'error');
+  } else {
+    if (id) {
+      const s = demoSupplies.find(x => x['รหัส'] === id);
+      if (s) { s['ชื่อพัสดุ'] = name; s['หน่วย'] = unit; s['จำนวนคงเหลือ'] = +data.quantity; s['จำนวนขั้นต่ำ'] = +data.minStock; s['หมวดหมู่'] = data.category; }
+    } else {
+      demoSupplies.push({ รหัส:'S'+Date.now(), ชื่อพัสดุ:name, หน่วย:unit, จำนวนคงเหลือ:+data.quantity, จำนวนขั้นต่ำ:+data.minStock, หมวดหมู่:data.category });
+    }
+    showToast('💾 บันทึกเรียบร้อย (Demo)', 'success'); closeModalDirect(); loadManage();
+  }
+}
+
+async function deleteSupply(id) {
+  if (!confirm('ลบพัสดุ ' + id + ' ?')) return;
+  if (scriptUrl) {
+    const res = await apiCall({ action: 'deleteSupply', id });
+    if (res?.success) { showToast('🗑️ ลบเรียบร้อย', 'success'); loadManage(); }
+    else showToast(res?.message, 'error');
+  } else {
+    const i = demoSupplies.findIndex(x => x['รหัส'] === id);
+    if (i > -1) demoSupplies.splice(i, 1);
+    showToast('🗑️ ลบเรียบร้อย (Demo)', 'success'); loadManage();
+  }
+}
+
+// ===== ALL REQUESTS =====
+async function loadAllRequests() {
+  const res = scriptUrl ? await loadFromAPI('getRequests') : null;
+  const data = res?.data || demoRequests;
+  const cont = document.getElementById('allReqTable');
+  if (!data.length) { cont.innerHTML = '<div class="empty-state"><div class="empty-icon">📑</div><h3>ไม่มีประวัติ</h3></div>'; return; }
+
+  cont.innerHTML = `<table>
+    <thead><tr><th>รหัส</th><th>ผู้เบิก</th><th>แผนก</th><th>รายการ</th><th>วัตถุประสงค์</th><th>วันที่ขอ</th><th>สถานะ</th><th>ผู้อนุมัติ</th></tr></thead>
+    <tbody>
+      ${data.map(r => {
+        const items = Array.isArray(r['รายการ']) ? r['รายการ'] : [];
+        const sc = r['สถานะ'] === 'อนุมัติ' ? 'badge-approved' : r['สถานะ'] === 'ไม่อนุมัติ' ? 'badge-rejected' : 'badge-pending';
+        return `<tr>
+          <td style="font-size:12px;color:var(--text-muted)">${r['รหัส']}</td>
+          <td class="td-bold">${r['ผู้เบิก']}</td>
+          <td style="font-size:13px">${r['แผนก']}</td>
+          <td>${items.map(i => `<span style="display:inline-block;background:var(--surface2);border:1px solid var(--border);padding:2px 8px;border-radius:4px;font-size:12px;margin:2px">${i.name}×${i.qty}</span>`).join('')}</td>
+          <td style="font-size:13px">${r['วัตถุประสงค์']}</td>
+          <td style="font-size:13px;white-space:nowrap">${r['วันที่ขอ']}</td>
+          <td><span class="badge ${sc}">${r['สถานะ']}</span></td>
+          <td style="font-size:13px">${r['ผู้อนุมัติ'] || '—'}</td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  </table>`;
+}
+
+// ===== SETTINGS =====
+function saveScriptUrl() {
+  const url = document.getElementById('scriptUrlInput').value.trim();
+  if (!url) { showToast('กรุณาใส่ URL', 'error'); return; }
+  scriptUrl = url; localStorage.setItem('scriptUrl', url);
+  document.getElementById('configBanner').style.display = 'none';
+  showToast('✅ บันทึก URL เรียบร้อย — รีเฟรชข้อมูล...', 'success');
+  loadPage(currentPage);
+}
+
+function saveScriptUrlFromSettings() {
+  const url = document.getElementById('settingsScriptUrl').value.trim();
+  if (!url) { showToast('กรุณาใส่ URL', 'error'); return; }
+  scriptUrl = url; localStorage.setItem('scriptUrl', url);
+  document.getElementById('configBanner') && (document.getElementById('configBanner').style.display = 'none');
+  showToast('✅ บันทึก URL เรียบร้อย', 'success');
+}
+
+// ===== MODAL =====
+function closeModal(e) { if (e.target === document.getElementById('modalOverlay')) closeModalDirect(); }
+function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+// ===== TOAST =====
+function showToast(msg, type = 'success') {
+  const cont = document.getElementById('toastContainer');
+  const icons = { success: '✅', error: '❌', warning: '⚠️' };
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  cont.appendChild(toast);
+  setTimeout(() => toast.remove(), 3500);
+}
+
+// ===== LOGOUT =====
+function doLogout() {
+  if (!confirm('ต้องการออกจากระบบ?')) return;
+  currentUser = null; localStorage.removeItem('currentUser');
+  document.getElementById('appPage').style.display = 'none';
+  document.getElementById('loginPage').style.display = 'flex';
+  cart = {};
+}
+</script>
+</body>
+</html>
